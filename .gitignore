@@ -1,4 +1,7 @@
-/myenv/
+myenv/
 **/__pycache__/
 
-.env
+backend/.env
+frontend/.env
+
+node_modules
