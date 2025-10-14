@@ -4,4 +4,6 @@ myenv/
 backend/.env
 frontend/.env
 
+backend/public/
+
 node_modules
