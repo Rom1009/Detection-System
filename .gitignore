@@ -4,6 +4,10 @@ myenv/
 backend/.env
 frontend/.env
 
-backend/public/
+# Ignore the raw data directory
+backend/public/data/
+
+# BUT, do NOT ignore the DVC pointer file for it!
+!backend/public/data.dvc
 
 node_modules
