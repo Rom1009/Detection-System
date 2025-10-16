@@ -1,0 +1,12 @@
+data:
+  annotation_path: backend/public/data/annotations.json
+
+split:
+  test_size: 0.2
+  random_state: 42
+  train_output: backend/public/data/train_ids.json # Output của bước split
+  valid_output: backend/public/data/valid_ids.json # Output của bước split
+
+train:
+  epochs: 50
+  batch_size: 16
