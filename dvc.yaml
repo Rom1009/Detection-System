@@ -26,16 +26,7 @@ stages:
     outs:
       - backend/public/processed/train_ids.json
       - backend/public/processed/valid_ids.json
-  # # Bước 3: Huấn luyện model
-  # train:
-  #   cmd: python src/train.py --params params.yaml
-  #   deps:
-  #     - src/train.py
-  #     - src/dataset.py # File chứa class Dataset
-  #     - data/annotations.json # Cần file tổng để tra cứu
-  #     - data/train_ids.json   # Cần file ID train
-  #     - data/valid_ids.json   # Cần file ID valid
-  #   params:
-  #     - train
-  #   outs:
-  #     - model/model.pth
+
+  process_data:
+    cmd: python backend/src/ml/data_pipeline/process_data.py
+  
