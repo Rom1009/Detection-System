@@ -26,9 +26,6 @@ def valid_transform():
     ])
     return valid_transforms
 
-
-    
-    
 class Img_Segmentation_Dataset(Dataset):
     def __init__(self, root_dir, annotation_file, transforms=None, image_ids=None): # Thêm image_ids
         self.root_dir = root_dir
@@ -68,3 +65,15 @@ class Img_Segmentation_Dataset(Dataset):
             mask = augmented['mask']
             
         return image, mask
+    
+if __name__ == "__main__":
+    # Ví dụ sử dụng dataset
+    dataset = Img_Segmentation_Dataset(
+        root_dir='path/to/images',
+        annotation_file='path/to/annotations.json',
+        transforms=train_transform()
+    )
+    
+    print(f"Dataset size: {len(dataset)}")
+    img, mask = dataset[0]
+    print(f"Image shape: {img.shape}, Mask shape: {mask.shape}")
