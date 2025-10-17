@@ -5,7 +5,7 @@ from skimage import measure
 import numpy as np
 import os
 from tqdm import tqdm
-
+import argparse
 
 def create_coco_annotations(root_dir, output_file):
     """
@@ -156,3 +156,21 @@ def create_coco_annotations(root_dir, output_file):
         json.dump(coco_output, f, indent=4)
     
     print(f"\nSuccessfully created COCO annotation file at: {output_file}")
+
+# --- THÊM KHỐI CODE NÀY VÀO CUỐI FILE ---
+if __name__ == '__main__':
+    # Tạo parser để đọc các tham số từ dòng lệnh
+    parser = argparse.ArgumentParser(description="Create COCO annotations from raw data.")
+    
+    # Tham số cho thư mục dữ liệu thô
+    parser.add_argument('--root-dir', type=str, required=True, 
+                        help='Path to the root directory containing raw data folders (good, scratch, etc.)')
+    
+    # Tham số cho file output
+    parser.add_argument('--output-file', type=str, required=True, 
+                        help='Path to save the output annotations.json file')
+
+    args = parser.parse_args()
+
+    # Gọi hàm chính với các tham số đã được cung cấp
+    create_coco_annotations(args.root_dir, args.output_file)
