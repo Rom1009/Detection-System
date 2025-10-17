@@ -2,34 +2,40 @@ stages:
   # Bước 1: Tạo file COCO tổng (giả sử bạn có script create_coco.py)
   prepare_data:
     cmd: python backend/src/ml/data_pipeline/prepare_data.py
+         --root-dir backend/public/data 
+         --output-file backend/public/processed/annotations.json
     deps:
-      - src/create_coco.py
-      - data/raw # Thư mục chứa ảnh và mask gốc
+      - backend/src/ml/data_pipeline/prepare_data.py
+      - backend/public/data/good 
+      - backend/public/data/oil
+      - backend/public/data/scratch
+      - backend/public/data/stain
+      - backend/public/data/ground_truth_1
+      - backend/public/data/ground_truth_2
     outs:
-      - data/annotations.json # Output là file COCO tổng
+      - backend/public/processed/annotations.json # Output là file COCO tổng
 
   # Bước 2: Chia dữ liệu thành tập train/valid
   split_data:
-    cmd: python src/split_data.py --params params.yaml
+    cmd: python backend/src/ml/data_pipeline/split_data.py --params params.yaml
     deps:
-      - src/split_data.py
-      - data/annotations.json # Phụ thuộc vào kết quả của bước trên
+      - backend/src/ml/data_pipeline/split_data.py
+      - backend/public/processed/annotations.json # Phụ thuộc vào kết quả của bước trên
     params:
       - split # Theo dõi các tham số trong mục 'split' của params.yaml
     outs:
-      - data/train_ids.json
-      - data/valid_ids.json
-
-  # Bước 3: Huấn luyện model
-  train:
-    cmd: python src/train.py --params params.yaml
-    deps:
-      - src/train.py
-      - src/dataset.py # File chứa class Dataset
-      - data/annotations.json # Cần file tổng để tra cứu
-      - data/train_ids.json   # Cần file ID train
-      - data/valid_ids.json   # Cần file ID valid
-    params:
-      - train
-    outs:
-      - model/model.pth
+      - backend/public/processed/train_ids.json
+      - backend/public/processed/valid_ids.json
+  # # Bước 3: Huấn luyện model
+  # train:
+  #   cmd: python src/train.py --params params.yaml
+  #   deps:
+  #     - src/train.py
+  #     - src/dataset.py # File chứa class Dataset
+  #     - data/annotations.json # Cần file tổng để tra cứu
+  #     - data/train_ids.json   # Cần file ID train
+  #     - data/valid_ids.json   # Cần file ID valid
+  #   params:
+  #     - train
+  #   outs:
+  #     - model/model.pth

@@ -32,7 +32,6 @@ def split_data(params_path):
     train_ids, valid_ids = train_valid_split(
         all_image_ids, 
         test_size=test_size, 
-        random_state=random_state
     )
 
     # Lưu kết quả ra file
