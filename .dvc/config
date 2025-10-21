@@ -1,0 +1,6 @@
+[core]
+    remote = storage
+[remote "storage"]
+    url = env:URL_DRIVE
+    gdrive_client_id = env:GG_DRIVE_CLIENT_ID
+    gdrive_client_secret = env:GG_DRIVE_CLIENT_SECRET
