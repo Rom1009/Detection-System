@@ -1,7 +1,7 @@
 myenv/
 **/__pycache__/
 
-backend/.env
+/.env
 frontend/.env
 
 # Ignore the raw data directory
