@@ -1,7 +1,7 @@
 schema: '2.0'
 stages:
   prepare_data:
-    cmd: python backend/src/ml/data_pipeline/prepare_data.py --root-dir 
+    cmd: python backend/src/ml_pipeline/data_pipeline/prepare_data.py --root-dir
       backend/public/data --output-file 
       backend/public/processed/annotations.json
     deps:
@@ -35,23 +35,24 @@ stages:
       md5: d8032848cdcc89a78225b813095e9672.dir
       size: 579635334
       nfiles: 400
-    - path: backend/src/ml/data_pipeline/prepare_data.py
+    - path: backend/src/ml_pipeline/data_pipeline/prepare_data.py
       hash: md5
       md5: 224ad85333a2b80f789c2b70a5b5d9bc
       size: 6904
     outs:
     - path: backend/public/processed/annotations.json
       hash: md5
-      md5: bd7b3b1ee3c26a8db62896437fed1532
+      md5: bb668c3c157a92a4676f0604ae4c7cfc
       size: 106576477
   split_data:
-    cmd: python backend/src/ml/data_pipeline/split_data.py --params params.yaml
+    cmd: python backend/src/ml_pipeline/data_pipeline/split_data.py --params 
+      params.yaml
     deps:
     - path: backend/public/processed/annotations.json
       hash: md5
-      md5: bd7b3b1ee3c26a8db62896437fed1532
+      md5: bb668c3c157a92a4676f0604ae4c7cfc
       size: 106576477
-    - path: backend/src/ml/data_pipeline/split_data.py
+    - path: backend/src/ml_pipeline/data_pipeline/split_data.py
       hash: md5
       md5: f152ef77d9a2c0ad52b42c3ed2205fb5
       size: 1493

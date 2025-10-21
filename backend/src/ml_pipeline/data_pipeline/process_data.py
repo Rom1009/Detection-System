@@ -65,15 +65,3 @@ class Img_Segmentation_Dataset(Dataset):
             mask = augmented['mask']
             
         return image, mask
-    
-if __name__ == "__main__":
-    # Ví dụ sử dụng dataset
-    dataset = Img_Segmentation_Dataset(
-        root_dir='path/to/images',
-        annotation_file='path/to/annotations.json',
-        transforms=train_transform()
-    )
-    
-    print(f"Dataset size: {len(dataset)}")
-    img, mask = dataset[0]
-    print(f"Image shape: {img.shape}, Mask shape: {mask.shape}")
