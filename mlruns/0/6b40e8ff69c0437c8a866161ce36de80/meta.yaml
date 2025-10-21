@@ -1,0 +1,14 @@
+artifact_uri: file:///home/dinhquy/Desktop/Code/AI/Detection-System/mlruns/0/6b40e8ff69c0437c8a866161ce36de80/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 6b40e8ff69c0437c8a866161ce36de80
+run_name: DeepLab_ResNet50_lr_1e-4_weighted
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761033006632
+status: 1
+tags: []
+user_id: dinhquy

@@ -1,11 +1,11 @@
 stages:
   # Bước 1: Tạo file COCO tổng (giả sử bạn có script create_coco.py)
   prepare_data:
-    cmd: python backend/src/ml/data_pipeline/prepare_data.py
+    cmd: python backend/src/ml_pipeline/data_pipeline/prepare_data.py
          --root-dir backend/public/data 
          --output-file backend/public/processed/annotations.json
     deps:
-      - backend/src/ml/data_pipeline/prepare_data.py
+      - backend/src/ml_pipeline/data_pipeline/prepare_data.py
       - backend/public/data/good 
       - backend/public/data/oil
       - backend/public/data/scratch
@@ -17,9 +17,9 @@ stages:
 
   # Bước 2: Chia dữ liệu thành tập train/valid
   split_data:
-    cmd: python backend/src/ml/data_pipeline/split_data.py --params params.yaml
+    cmd: python backend/src/ml_pipeline/data_pipeline/split_data.py --params params.yaml
     deps:
-      - backend/src/ml/data_pipeline/split_data.py
+      - backend/src/ml_pipeline/data_pipeline/split_data.py
       - backend/public/processed/annotations.json # Phụ thuộc vào kết quả của bước trên
     params:
       - split # Theo dõi các tham số trong mục 'split' của params.yaml
@@ -27,6 +27,11 @@ stages:
       - backend/public/processed/train_ids.json
       - backend/public/processed/valid_ids.json
 
-  process_data:
-    cmd: python backend/src/ml/data_pipeline/process_data.py
-  
+  main:
+    cmd: python backend/src/ml_pipeline/main.py
+    deps:
+      - backend/src/ml_pipeline/main.py
+
+    outs: 
+      - backend/src/ml_pipeline/model/model.pth
+      
