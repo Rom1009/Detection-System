@@ -11,3 +11,7 @@ backend/public/data/
 !backend/public/data.dvc
 
 node_modules
+
+mlruns/
+
+backend/public/labelling/
