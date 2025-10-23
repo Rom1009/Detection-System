@@ -1,0 +1,42 @@
+services:
+  # Airflow Database
+  airflow-db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5433:5432"
+    volumes:
+      - airflow_data:/var/lib/postgresql/data
+    restart: always
+
+  # Airflow
+  airflow:
+    image: apache/airflow:latest-python3.11
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      # Metadata DB connection
+      PYTHONPATH: /opt/airflow/dags
+      AIRFLOW__WEBSERVER__DEFAULT_UI_LOCALE: en 
+    volumes:
+      - ./backend/airflow/dags:/opt/airflow/dags
+      - ./backend/airflow/logs:/opt/airflow/logs
+      - ./backend/airflow/requirements.txt:/requirements.txt
+    ports:
+      - "8080:8080"
+    depends_on:
+      - airflow-db
+    command: >
+      bash -c "
+      (airflow db migrate &&
+      pip install -r /requirements.txt) &&
+      airflow standalone
+      "
+    restart: always
+
+volumes:
+  airflow_data:
