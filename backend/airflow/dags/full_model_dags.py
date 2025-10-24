@@ -13,6 +13,8 @@ DVC_CACHE_PATH = "/home/dinhquy/.cache/dvc"
 # SỬA LẠI: Email của bạn để nhận thông báo
 YOUR_EMAIL = "quynguyencurit2002@gmail.com"
 
+
+
 # Mounts (chia sẻ file) chung cho các container
 common_mounts = [
     Mount(source=PROJECT_ROOT_PATH, target="/app", type="bind"),
