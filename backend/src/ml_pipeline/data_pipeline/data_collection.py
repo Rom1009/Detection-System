@@ -7,7 +7,7 @@ GDRIVE_REMOTE_NAME = "img_seg"
 
 GDRIVE_SOURCE_PATH = "DVC/new_data"
 
-LOCAL_LANDING_ZONE = "public/labelling"
+LOCAL_LANDING_ZONE = "../../../public/labelling"
 
 def main():
     print(f"--- Start Data Collection from Google Drive")

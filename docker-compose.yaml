@@ -14,18 +14,23 @@ services:
 
   # Airflow
   airflow:
-    image: apache/airflow:latest-python3.11
+    # image: apache/airflow:latest-python3.11
+    build: .
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW_UID: 1000
+      AIRFLOW_GID: 1000
       # Metadata DB connection
-      PYTHONPATH: /opt/airflow/dags
+      PYTHONPATH: /opt/airflow
       AIRFLOW__WEBSERVER__DEFAULT_UI_LOCALE: en 
     volumes:
       - ./backend/airflow/dags:/opt/airflow/dags
       - ./backend/airflow/logs:/opt/airflow/logs
       - ./backend/airflow/requirements.txt:/requirements.txt
+      - ./backend/src:/opt/airflow/src
+      - /home/thomas/.config/rclone/rclone.conf:/home/airflow/.config/rclone/rclone.conf
     ports:
       - "8080:8080"
     depends_on:
