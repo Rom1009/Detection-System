@@ -7,9 +7,9 @@ GDRIVE_REMOTE_NAME = "img_seg"
 
 GDRIVE_SOURCE_PATH = "DVC/new_data"
 
-LOCAL_LANDING_ZONE = "public/labelling"
+LOCAL_LANDING_ZONE = "../../../public/labelling"
 
-def main():
+def data_collection():
     print(f"--- Start Data Collection from Google Drive")
     
     command = [
@@ -30,6 +30,3 @@ def main():
     except FileExistsError:
         print(f"Error: Not find 'rclone'", file = sys.stderr)
         sys.exit(1)
-
-if __name__ == "__main__":
-    main()

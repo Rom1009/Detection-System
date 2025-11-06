@@ -25,11 +25,12 @@ services:
       # AIRFLOW_UID: "${AIRFLOW_UID:-50000}"
       # DOCKER_GID: "${DOCKER_GID:-984}"
       # Metadata DB connection
-      PYTHONPATH: /opt/airflow/dags
+      PYTHONPATH: /opt/airflow
       AIRFLOW__WEBSERVER__DEFAULT_UI_LOCALE: en 
     volumes:
       - ./backend/airflow/dags:/opt/airflow/dags
       - ./backend/airflow/logs:/opt/airflow/logs
+      - ./backend/src:/opt/airflow/src
       - ./backend/airflow/requirements.txt:/requirements.txt
       - /home/dinhquy/Desktop/Code/AI/Detection-System:/app
       # - /var/run/docker.sock:/var/run/docker.sock

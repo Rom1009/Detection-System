@@ -14,4 +14,6 @@ node_modules
 
 mlruns/
 
-backend/public/labelling/
+backend/public/labelling/.dvc/config
+
+gen-lang-client-0839403089-f8341344ffa2.json
