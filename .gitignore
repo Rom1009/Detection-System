@@ -1,7 +1,19 @@
 myenv/
 **/__pycache__/
 
-backend/.env
+/.env
 frontend/.env
 
+# Ignore the raw data directory
+backend/public/data/
+
+# BUT, do NOT ignore the DVC pointer file for it!
+!backend/public/data.dvc
+
 node_modules
+
+mlruns/
+
+backend/public/labelling/
+
+backend/airflow/logs/

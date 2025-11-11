@@ -1,2 +1,0 @@
-['remote "drive"']
-    gdrive_service_account_json_file_path = ../gen-lang-client-0839403089-f8341344ffa2.json
