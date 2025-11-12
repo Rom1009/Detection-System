@@ -15,17 +15,25 @@ services:
   # Airflow
   airflow:
     image: apache/airflow:latest-python3.11
+    # user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}"
+    # group_add:
+    #   - ${DOCKER_GID:-984}
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      # AIRFLOW_UID: "${AIRFLOW_UID:-50000}"
+      # DOCKER_GID: "${DOCKER_GID:-984}"
       # Metadata DB connection
-      PYTHONPATH: /opt/airflow/dags
+      PYTHONPATH: /opt/airflow
       AIRFLOW__WEBSERVER__DEFAULT_UI_LOCALE: en 
     volumes:
       - ./backend/airflow/dags:/opt/airflow/dags
       - ./backend/airflow/logs:/opt/airflow/logs
+      - ./backend/src:/opt/airflow/src
       - ./backend/airflow/requirements.txt:/requirements.txt
+      - /home/dinhquy/Desktop/Code/AI/Detection-System:/app
+      # - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "8080:8080"
     depends_on:

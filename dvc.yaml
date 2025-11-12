@@ -1,17 +1,11 @@
 stages:
   # Bước 1: Tạo file COCO tổng (giả sử bạn có script create_coco.py)
-  prepare_data:
-    cmd: python backend/src/ml_pipeline/data_pipeline/prepare_data.py
+  data_collection:
+    cmd: python backend/src/ml_pipeline/data_pipeline/data_collection.py
          --root-dir backend/public/data 
          --output-file backend/public/processed/annotations.json
     deps:
-      - backend/src/ml_pipeline/data_pipeline/prepare_data.py
-      - backend/public/data/good 
-      - backend/public/data/oil
-      - backend/public/data/scratch
-      - backend/public/data/stain
-      - backend/public/data/ground_truth_1
-      - backend/public/data/ground_truth_2
+      - backend/src/ml_pipeline/data_pipeline/data_collection.py
     outs:
       - backend/public/processed/annotations.json # Output là file COCO tổng
 
