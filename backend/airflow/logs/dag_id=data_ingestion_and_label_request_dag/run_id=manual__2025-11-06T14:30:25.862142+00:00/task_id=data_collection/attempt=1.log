@@ -1,0 +1,219 @@
+{"timestamp":"2025-11-06T14:30:29.490923Z","level":"info","event":"DAG bundles loaded: dags-folder","logger":"airflow.dag_processing.bundles.manager.DagBundlesManager","filename":"manager.py","lineno":179}
+{"timestamp":"2025-11-06T14:30:29.492756Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/full_model_dags.py","logger":"airflow.models.dagbag.DagBag","filename":"dagbag.py","lineno":593}
+{"timestamp":"2025-11-06T14:30:29.646064Z","level":"warning","event":"The `airflow.decorators.dag` attribute is deprecated. Please use `'airflow.sdk.dag'`.","category":"DeprecatedImportWarning","filename":"/opt/airflow/dags/full_model_dags.py","lineno":4,"logger":"py.warnings"}
+{"timestamp":"2025-11-06T14:30:30.228924Z","level":"info","event":"--- Start Data Collection from Google Drive","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:32.678066Z","level":"info","event":"Transferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:32.678623Z","level":"info","event":"Transferred:            0 / 2, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:32.679040Z","level":"info","event":"Elapsed time:         2.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:32.679398Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:32.679811Z","level":"info","event":" *                                    images.png: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.177385Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.177615Z","level":"info","event":"Transferred:            0 / 2, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.177713Z","level":"info","event":"Elapsed time:         2.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.177797Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.177877Z","level":"info","event":" *                                    images.png: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.678392Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.678880Z","level":"info","event":"Transferred:            0 / 2, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.679318Z","level":"info","event":"Elapsed time:         3.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.679732Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.679960Z","level":"info","event":" *                                    images.png: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.876654Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.877061Z","level":"info","event":"2025-11-06 14:30:33 ERROR : images.png: Failed to copy: mkdir /public: permission denied","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.877280Z","level":"info","event":"Transferred:   \t          0 B / 1.475 KiB, 0%, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.877468Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.877713Z","level":"info","event":"Transferred:            0 / 2, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.877891Z","level":"info","event":"Elapsed time:         3.5s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.878139Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:33.878323Z","level":"info","event":" *                                    images.png:  0% /1.475Ki, 0/s, -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:34.178374Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:34.178884Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:34.179215Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:34.179552Z","level":"info","event":"Elapsed time:         3.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:34.179890Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:34.678422Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:34.678937Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:34.679263Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:34.679708Z","level":"info","event":"Elapsed time:         4.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:34.680091Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.178048Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.178567Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.178920Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.179235Z","level":"info","event":"Elapsed time:         4.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.179585Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.678003Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.678476Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.678761Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.678950Z","level":"info","event":"Elapsed time:         5.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.679126Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.707997Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.708744Z","level":"info","event":"2025-11-06 14:30:35 ERROR : psd-black-smartphone-with-blank-screen-isolated_1409-3968.jpg: Failed to copy: mkdir /public: permission denied","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.709157Z","level":"info","event":"Transferred:   \t          0 B / 21.457 KiB, 0%, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.709523Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.709827Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.710188Z","level":"info","event":"Elapsed time:         5.4s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.710575Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.711158Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg:  0% /21.457Ki, 0/s, -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.711596Z","level":"info","event":"2025-11-06 14:30:35 ERROR : Local file system at /public/labelling: not deleting files as there were IO errors","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.712105Z","level":"info","event":"Transferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.712462Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.712882Z","level":"info","event":"Elapsed time:         5.4s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.713199Z","level":"info","event":"2025-11-06 14:30:35 ERROR : Local file system at /public/labelling: not deleting directories as there were IO errors","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.713598Z","level":"info","event":"Transferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.713938Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.714252Z","level":"info","event":"Elapsed time:         5.4s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.714605Z","level":"info","event":"2025-11-06 14:30:35 ERROR : Attempt 1/3 failed with 2 errors and: mkdir /public: permission denied","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.714800Z","level":"info","event":"Transferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:35.714974Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:36.177320Z","level":"info","event":"Elapsed time:         5.4sTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:36.677765Z","level":"info","event":"Elapsed time:         5.8sTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:36.678283Z","level":"info","event":"Transferred:            0 / 2, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:36.678673Z","level":"info","event":"Elapsed time:         6.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:36.678871Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:36.679044Z","level":"info","event":" *                                    images.png: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.177555Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.178055Z","level":"info","event":"Transferred:            0 / 2, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.178369Z","level":"info","event":"Elapsed time:         6.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.178603Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.178784Z","level":"info","event":" *                                    images.png: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.562732Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.562962Z","level":"info","event":"2025-11-06 14:30:37 ERROR : psd-black-smartphone-with-blank-screen-isolated_1409-3968.jpg: Failed to copy: mkdir /public: permission denied","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.563083Z","level":"info","event":"Transferred:   \t          0 B / 21.457 KiB, 0%, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.563186Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.563355Z","level":"info","event":"Transferred:            0 / 2, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.563572Z","level":"info","event":"Elapsed time:         7.2s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.563685Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.563819Z","level":"info","event":" *                                    images.png: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.678274Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg:  0% /21.457Ki, 0/s, -Transferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.678707Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.679098Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.679316Z","level":"info","event":"Elapsed time:         7.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:37.679529Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:38.177945Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:38.178322Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:38.178579Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:38.178783Z","level":"info","event":"Elapsed time:         7.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:38.178968Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:38.678204Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:38.678705Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:38.679048Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:38.679336Z","level":"info","event":"Elapsed time:         8.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:38.679603Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:39.177470Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:39.177743Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:39.177929Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:39.178127Z","level":"info","event":"Elapsed time:         8.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:39.178291Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:39.678307Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:39.678521Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:39.678628Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:39.678717Z","level":"info","event":"Elapsed time:         9.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:39.678801Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:40.177884Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:40.178091Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:40.178199Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:40.178305Z","level":"info","event":"Elapsed time:         9.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:40.178394Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:40.678083Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:40.678366Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:40.678573Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:40.678745Z","level":"info","event":"Elapsed time:        10.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:40.678916Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:41.177731Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:41.177943Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:41.178043Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:41.178129Z","level":"info","event":"Elapsed time:        10.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:41.178210Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:41.677877Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:41.678302Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:41.678610Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:41.678839Z","level":"info","event":"Elapsed time:        11.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:41.679042Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:42.177586Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:42.178219Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:42.178761Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:42.179221Z","level":"info","event":"Elapsed time:        11.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:42.179715Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:42.678045Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:42.678241Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:42.678341Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:42.678428Z","level":"info","event":"Elapsed time:        12.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:42.678569Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:43.177568Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:43.178119Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:43.178560Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:43.178935Z","level":"info","event":"Elapsed time:        12.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:43.179276Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:43.677367Z","level":"info","event":" *                                    images.png: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:43.677817Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:43.678038Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:43.678222Z","level":"info","event":"Elapsed time:        13.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:43.678395Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.147284Z","level":"info","event":" *                                    images.png: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.147840Z","level":"info","event":"2025-11-06 14:30:44 ERROR : images.png: Failed to copy: mkdir /public: permission denied","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.148105Z","level":"info","event":"Transferred:   \t          0 B / 1.475 KiB, 0%, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.148401Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.148660Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.148989Z","level":"info","event":"Elapsed time:        13.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.149378Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.149883Z","level":"info","event":" *                                    images.png:  0% /1.475Ki, 0/s, -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.150101Z","level":"info","event":"2025-11-06 14:30:44 ERROR : Local file system at /public/labelling: not deleting files as there were IO errors","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.150282Z","level":"info","event":"Transferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.150453Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.150659Z","level":"info","event":"Elapsed time:        13.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.150829Z","level":"info","event":"2025-11-06 14:30:44 ERROR : Local file system at /public/labelling: not deleting directories as there were IO errors","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.151039Z","level":"info","event":"Transferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.151203Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.151365Z","level":"info","event":"Elapsed time:        13.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.151561Z","level":"info","event":"2025-11-06 14:30:44 ERROR : Attempt 2/3 failed with 2 errors and: mkdir /public: permission denied","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.151732Z","level":"info","event":"Transferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.151895Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.178191Z","level":"info","event":"Elapsed time:        13.8sTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:44.678067Z","level":"info","event":"Elapsed time:        13.8sTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.178050Z","level":"info","event":"Elapsed time:        14.3sTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.178421Z","level":"info","event":"Transferred:            0 / 2, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.178692Z","level":"info","event":"Elapsed time:        14.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.178880Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.179052Z","level":"info","event":" *                                    images.png: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.678282Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.678747Z","level":"info","event":"Transferred:            0 / 2, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.678972Z","level":"info","event":"Elapsed time:        15.3s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.679160Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.679334Z","level":"info","event":" *                                    images.png: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.786873Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.787640Z","level":"info","event":"2025-11-06 14:30:45 ERROR : images.png: Failed to copy: mkdir /public: permission denied","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.788208Z","level":"info","event":"Transferred:   \t          0 B / 1.475 KiB, 0%, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.788816Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.789333Z","level":"info","event":"Transferred:            0 / 2, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.789844Z","level":"info","event":"Elapsed time:        15.4s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.790291Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:45.790787Z","level":"info","event":" *                                    images.png:  0% /1.475Ki, 0/s, -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.178079Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferringTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.178529Z","level":"info","event":"Errors:                 1 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.178854Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.179201Z","level":"info","event":"Elapsed time:        15.8s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.179400Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.299577Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg: transferring","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.300157Z","level":"info","event":"2025-11-06 14:30:46 ERROR : psd-black-smartphone-with-blank-screen-isolated_1409-3968.jpg: Failed to copy: mkdir /public: permission denied","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.300606Z","level":"info","event":"Transferred:   \t          0 B / 21.457 KiB, 0%, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.300857Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.301064Z","level":"info","event":"Transferred:            0 / 1, 0%","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.301301Z","level":"info","event":"Elapsed time:        15.9s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.301544Z","level":"info","event":"Transferring:","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.301943Z","level":"info","event":" * psd-black-smartphone-w…isolated_1409-3968.jpg:  0% /21.457Ki, 0/s, -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.302151Z","level":"info","event":"2025-11-06 14:30:46 ERROR : Local file system at /public/labelling: not deleting files as there were IO errors","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.302327Z","level":"info","event":"Transferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.302524Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.302714Z","level":"info","event":"Elapsed time:        15.9s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.302881Z","level":"info","event":"2025-11-06 14:30:46 ERROR : Local file system at /public/labelling: not deleting directories as there were IO errors","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.303050Z","level":"info","event":"Transferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.303213Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.303377Z","level":"info","event":"Elapsed time:        15.9s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.303585Z","level":"info","event":"2025-11-06 14:30:46 ERROR : Attempt 3/3 failed with 2 errors and: mkdir /public: permission denied","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.303758Z","level":"info","event":"Transferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.303921Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.304086Z","level":"info","event":"Elapsed time:        15.9sTransferred:   \t          0 B / 0 B, -, 0 B/s, ETA -","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.304250Z","level":"info","event":"Errors:                 2 (retrying may help)","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.304415Z","level":"info","event":"Elapsed time:        15.9s","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:30:46.304647Z","level":"error","event":"2025/11/06 14:30:46 Failed to sync with 2 errors: last error was: mkdir /public: permission denied","logger":"task.stderr"}
+{"timestamp":"2025-11-06T14:30:46.310093Z","level":"error","event":"Error when sync data: Command '['rclone', 'sync', 'img_seg:DVC/new_data', '../../../public/labelling', '--progress']' returned non-zero exit status 1.","logger":"task.stderr"}
+{"timestamp":"2025-11-06T14:30:46.310114Z","level":"error","event":"Task exited","exit_code":1,"logger":"task","filename":"task_runner.py","lineno":990}
