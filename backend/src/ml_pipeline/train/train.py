@@ -3,7 +3,7 @@ from tqdm import tqdm
 import mlflow
 import mlflow.pytorch
 import torch.nn.functional as F
-from evaluation.evaluation import calculate_metrics_multiclass
+from backend.src.ml_pipeline.evaluation.evaluation import calculate_metrics_multiclass
 
 # ... (Hàm train và validate giữ nguyên) ...
 

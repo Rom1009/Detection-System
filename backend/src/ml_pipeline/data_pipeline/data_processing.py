@@ -18,11 +18,11 @@ def split_data(params_path):
         params = yaml.safe_load(f)
 
     # Đường dẫn và tham số từ params.yaml
-    annotation_file = params['data']['annotation_path']
-    test_size = params['split']['test_size']
-    random_state = params['split']['random_state']
-    train_output = params['split']['train_output']
-    valid_output = params['split']['valid_output']
+    annotation_file = params['path']['annotation_path']
+    test_size = params['train_valid']['test_size']
+    random_state = params['train_valid']['random_state']
+    train_output = params['train_valid']['train_output']
+    valid_output = params['train_valid']['valid_output']
 
     # Tải toàn bộ ID ảnh
     coco = COCO(annotation_file)

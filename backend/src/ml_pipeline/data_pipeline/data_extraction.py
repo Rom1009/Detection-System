@@ -6,11 +6,19 @@ import numpy as np
 import os
 from tqdm import tqdm
 import argparse
+import yaml
 
-def create_coco_annotations(root_dir, output_file):
+
+def create_coco_annotations(params_path):
     """
     Quét qua thư mục dữ liệu và tạo file chú thích định dạng COCO.
     """
+    
+    with open(params_path) as f:
+        params = yaml.safe_load(f)
+    
+    root_dir = params['path']['data_path']
+    output_file = params['path']['annotation_path']
 
     # --- 1. Khởi tạo cấu trúc file COCO ---
     info = {
@@ -157,20 +165,11 @@ def create_coco_annotations(root_dir, output_file):
     
     print(f"\nSuccessfully created COCO annotation file at: {output_file}")
 
-# --- THÊM KHỐI CODE NÀY VÀO CUỐI FILE ---
 if __name__ == '__main__':
-    # Tạo parser để đọc các tham số từ dòng lệnh
     parser = argparse.ArgumentParser(description="Create COCO annotations from raw data.")
     
-    # Tham số cho thư mục dữ liệu thô
-    parser.add_argument('--root-dir', type=str, required=True, 
-                        help='Path to the root directory containing raw data folders (good, scratch, etc.)')
-    
-    # Tham số cho file output
-    parser.add_argument('--output-file', type=str, required=True, 
-                        help='Path to save the output annotations.json file')
+    parser.add_argument("--params", default = "params.yaml")
 
     args = parser.parse_args()
 
-    # Gọi hàm chính với các tham số đã được cung cấp
-    create_coco_annotations(args.root_dir, args.output_file)
+    create_coco_annotations(args.params)

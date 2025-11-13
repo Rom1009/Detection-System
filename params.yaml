@@ -1,7 +1,8 @@
-data:
+path:
+  data_path: backend/public/data
   annotation_path: backend/public/processed/annotations.json
 
-split:
+train_valid:
   test_size: 0.2
   random_state: 42
   train_output: backend/public/processed/train_ids.json # Output của bước split

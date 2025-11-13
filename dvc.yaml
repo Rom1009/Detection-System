@@ -1,31 +1,37 @@
 stages:
-  # Bước 1: Tạo file COCO tổng (giả sử bạn có script create_coco.py)
   data_collection:
     cmd: python backend/src/ml_pipeline/data_pipeline/data_collection.py
-         --root-dir backend/public/data 
-         --output-file backend/public/processed/annotations.json
     deps:
       - backend/src/ml_pipeline/data_pipeline/data_collection.py
     outs:
-      - backend/public/processed/annotations.json # Output là file COCO tổng
+      - backend/public/labelling 
 
-  # Bước 2: Chia dữ liệu thành tập train/valid
-  split_data:
-    cmd: python backend/src/ml_pipeline/data_pipeline/split_data.py --params params.yaml
+  data_extraction:
+    cmd: python backend/src/ml_pipeline/data_pipeline/data_extraction.py --params params.yaml
     deps:
-      - backend/src/ml_pipeline/data_pipeline/split_data.py
-      - backend/public/processed/annotations.json # Phụ thuộc vào kết quả của bước trên
+      - backend/src/ml_pipeline/data_pipeline/data_extraction.py
+      - backend/public/labelling
     params:
-      - split # Theo dõi các tham số trong mục 'split' của params.yaml
+      - path
+    outs:
+      - backend/public/processed/annotations.json
+
+  data_processing:
+    cmd: python backend/src/ml_pipeline/data_pipeline/data_processing.py --params params.yaml
+    deps: 
+      - backend/src/ml_pipeline/data_pipeline/data_processing.py
+      - backend/public/processed/annotations.json
+    params:
+      - train_valid
     outs:
       - backend/public/processed/train_ids.json
       - backend/public/processed/valid_ids.json
 
   main:
-    cmd: python backend/src/ml_pipeline/main.py
+    cmd: python -m backend.src.ml_pipeline.main
     deps:
       - backend/src/ml_pipeline/main.py
-
+      - backend/public/processed/train_ids.json
+      - backend/public/processed/valid_ids.json
     outs: 
       - backend/src/ml_pipeline/model/model.pth
-      

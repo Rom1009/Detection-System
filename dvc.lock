@@ -72,3 +72,67 @@ stages:
       hash: md5
       md5: 744149cf634ac121fcb724ee8ff8950b
       size: 1441
+  data_collection:
+    cmd: python backend/src/ml_pipeline/data_pipeline/data_collection.py
+    deps:
+    - path: backend/src/ml_pipeline/data_pipeline/data_collection.py
+      hash: md5
+      md5: b5ff30cdcff89bd3883086c010c773a6
+      size: 772
+    outs:
+    - path: backend/public/labelling
+      hash: md5
+      md5: 6f64628654a59bcd6eb86e0676502f89.dir
+      size: 23482
+      nfiles: 2
+  data_extraction:
+    cmd: python backend/src/ml_pipeline/data_pipeline/data_extraction.py 
+      --params params.yaml
+    deps:
+    - path: backend/public/labelling
+      hash: md5
+      md5: 6f64628654a59bcd6eb86e0676502f89.dir
+      size: 23482
+      nfiles: 2
+    - path: backend/src/ml_pipeline/data_pipeline/data_extraction.py
+      hash: md5
+      md5: a4d95c60199b9ddd0b154d4d6c7b5827
+      size: 6533
+    params:
+      params.yaml:
+        path:
+          data_path: backend/public/data
+          annotation_path: backend/public/processed/annotations.json
+    outs:
+    - path: backend/public/processed/annotations.json
+      hash: md5
+      md5: 0551233987c596e7c13ecd27684bcd53
+      size: 106576477
+  data_processing:
+    cmd: python backend/src/ml_pipeline/data_pipeline/data_processing.py 
+      --params params.yaml
+    deps:
+    - path: backend/public/processed/annotations.json
+      hash: md5
+      md5: 0551233987c596e7c13ecd27684bcd53
+      size: 106576477
+    - path: backend/src/ml_pipeline/data_pipeline/data_processing.py
+      hash: md5
+      md5: a9c0e99cfaee0b08653a4a2488c61653
+      size: 1517
+    params:
+      params.yaml:
+        train_valid:
+          test_size: 0.2
+          random_state: 42
+          train_output: backend/public/processed/train_ids.json
+          valid_output: backend/public/processed/valid_ids.json
+    outs:
+    - path: backend/public/processed/train_ids.json
+      hash: md5
+      md5: fee7abbeda0713defa89c6384fd8d125
+      size: 4772
+    - path: backend/public/processed/valid_ids.json
+      hash: md5
+      md5: 744149cf634ac121fcb724ee8ff8950b
+      size: 1441

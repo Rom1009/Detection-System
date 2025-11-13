@@ -5,8 +5,8 @@ import json  # ⭐ 1. Thêm thư viện JSON
 import os    # ⭐ 2. Thêm thư viện OS
 
 # --- Sửa lại đường dẫn import để chạy từ gốc (theo lỗi ở lần trước) ---
-from model.model import model
-from train.train import run
+from .model.model import model
+from .train.train import run
 from backend.src.ml_pipeline.dataset import Img_Segmentation_Dataset, train_transform, valid_transform
 
 # ===================================================================
