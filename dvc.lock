@@ -106,16 +106,16 @@ stages:
     outs:
     - path: backend/public/processed/annotations.json
       hash: md5
-      md5: 0551233987c596e7c13ecd27684bcd53
-      size: 106576477
+      md5: 3300f6c190a37f9a614ae8fe0e4e42de
+      size: 106576507
   data_processing:
     cmd: python backend/src/ml_pipeline/data_pipeline/data_processing.py 
       --params params.yaml
     deps:
     - path: backend/public/processed/annotations.json
       hash: md5
-      md5: 0551233987c596e7c13ecd27684bcd53
-      size: 106576477
+      md5: 3300f6c190a37f9a614ae8fe0e4e42de
+      size: 106576507
     - path: backend/src/ml_pipeline/data_pipeline/data_processing.py
       hash: md5
       md5: a9c0e99cfaee0b08653a4a2488c61653

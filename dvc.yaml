@@ -1,21 +1,4 @@
 stages:
-  data_collection:
-    cmd: python backend/src/ml_pipeline/data_pipeline/data_collection.py
-    deps:
-      - backend/src/ml_pipeline/data_pipeline/data_collection.py
-    outs:
-      - backend/public/labelling 
-
-  data_extraction:
-    cmd: python backend/src/ml_pipeline/data_pipeline/data_extraction.py --params params.yaml
-    deps:
-      - backend/src/ml_pipeline/data_pipeline/data_extraction.py
-      - backend/public/labelling
-    params:
-      - path
-    outs:
-      - backend/public/processed/annotations.json
-
   data_processing:
     cmd: python backend/src/ml_pipeline/data_pipeline/data_processing.py --params params.yaml
     deps: 

@@ -6,6 +6,7 @@ frontend/.env
 
 # Ignore the raw data directory
 backend/public/data/
+backend/public/labelling/
 
 # BUT, do NOT ignore the DVC pointer file for it!
 !backend/public/data.dvc
