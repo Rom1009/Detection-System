@@ -1,7 +1,25 @@
+x-airflow-common: &AIRFLOW_COMMON_CONFIG
+  image: apache/airflow:latest-python3.11
+  environment:
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__WEBSERVER__SECRET_KEY: super-secret-key-for-mlops-project # Day la 1 doan ma auto-generated va luu tru tren server 
+    AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+
+    PYTHONPATH: /app/ai/backend/src
+  user: root
+
+x-project-volume: &PROJECT_VOLUME_MAPPING
+  - .:/app/ai
+  - ./backend/airflow/dags:/opt/airflow/dags
+  - /var/run/docker.sock:/var/run/docker.sock
+
+
 services:
-  # Airflow Database
+  # 1. DATABASE (PostgreSQL)
   airflow-db:
     image: postgres:13
+    container_name: airflow-db
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
@@ -12,39 +30,67 @@ services:
       - airflow_data:/var/lib/postgresql/data
     restart: always
 
-  # Airflow
-  airflow:
-    image: apache/airflow:latest-python3.11
-    # user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}"
-    # group_add:
-    #   - ${DOCKER_GID:-984}
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      # AIRFLOW_UID: "${AIRFLOW_UID:-50000}"
-      # DOCKER_GID: "${DOCKER_GID:-984}"
-      # Metadata DB connection
-      PYTHONPATH: /opt/airflow
-      AIRFLOW__WEBSERVER__DEFAULT_UI_LOCALE: en 
-    volumes:
-      - ./backend/airflow/dags:/opt/airflow/dags
-      - ./backend/airflow/logs:/opt/airflow/logs
-      - ./backend/src:/opt/airflow/src
-      - ./backend/airflow/requirements.txt:/requirements.txt
-      - /home/dinhquy/Desktop/Code/AI/Detection-System:/app
-      # - /var/run/docker.sock:/var/run/docker.sock
+  # 2. KHỞI TẠO (Database Migration và Tạo User Admin)
+  airflow-init:
+    <<: *AIRFLOW_COMMON_CONFIG
+    container_name: airflow_init
+    volumes: *PROJECT_VOLUME_MAPPING
+    # Cài đặt dependency Airflow và khởi tạo DB
+    entrypoint: /bin/bash -c "pip install -r /app/ai/backend/airflow/requirements.txt && airflow db migrate && airflow users create --username admin --firstname Thomas --lastname ML --role Admin --email admin@example.com --password admin"
+    depends_on:
+      - airflow-db
+
+  # 3. WEBSERVER (Giao diện người dùng)
+  airflow-webserver:
+    <<: *AIRFLOW_COMMON_CONFIG
+    container_name: airflow_webserver
+    command: webserver
+    volumes: *PROJECT_VOLUME_MAPPING
     ports:
       - "8080:8080"
     depends_on:
       - airflow-db
-    command: >
-      bash -c "
-      (airflow db migrate &&
-      pip install -r /requirements.txt) &&
-      airflow standalone
-      "
+      - airflow-init
     restart: always
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+
+  # 4. SCHEDULER (Bộ lập lịch)
+  airflow-scheduler:
+    <<: *AIRFLOW_COMMON_CONFIG
+    container_name: airflow_scheduler
+    command: scheduler
+    volumes: *PROJECT_VOLUME_MAPPING
+    depends_on:
+      - airflow-db
+      - airflow-webserver
+    restart: always
+
+  # 5. WORKER (Nơi chạy DockerOperator và các Image Custom)
+  airflow-worker:
+    <<: *AIRFLOW_COMMON_CONFIG
+    container_name: airflow_worker
+    command: worker
+    volumes: *PROJECT_VOLUME_MAPPING 
+    depends_on:
+      - airflow-db
+      - airflow-scheduler
+    restart: always
+  
+  # 6. DỊCH VỤ API (Tùy chọn: Dùng để chạy Inference/Serving liên tục)
+  # backend-api:
+  #   build:
+  #     context: .
+  #     dockerfile: backend/src/Dockerfile.api # Giả sử có file Dockerfile.api
+  #   container_name: backend_api_service
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - .:/app/repo # API cần thấy code và mô hình
+  #   restart: always
 
 volumes:
   airflow_data:
