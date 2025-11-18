@@ -21,10 +21,7 @@ from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.providers.standard.operators.python import PythonOperator
 from src.ml_pipeline.data_pipeline.data_collection import data_collection
 
-
-
 YOUR_EMAIL = "quynguyencurit2002@gmail.com"
-
 
 @dag(
     dag_id="data_ingestion_and_label_request_dag", # Đặt lại tên DAG ID cho rõ ràng

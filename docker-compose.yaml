@@ -3,11 +3,11 @@ x-airflow-common: &AIRFLOW_COMMON_CONFIG
   environment:
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    AIRFLOW__WEBSERVER__SECRET_KEY: super-secret-key-for-mlops-project # Day la 1 doan ma auto-generated va luu tru tren server 
+    AIRFLOW__CORE__FERNET_KEY: '' # Day la 1 doan ma auto-generated va luu tru tren server 
     AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
 
     PYTHONPATH: /app/ai/backend/src
-  user: root
+  user: "${AIRFLOW_UID:-50000}:0"
 
 x-project-volume: &PROJECT_VOLUME_MAPPING
   - .:/app/ai
@@ -41,10 +41,10 @@ services:
       - airflow-db
 
   # 3. WEBSERVER (Giao diện người dùng)
-  airflow-webserver:
+  airflow-apiserver:
     <<: *AIRFLOW_COMMON_CONFIG
-    container_name: airflow_webserver
-    command: webserver
+    command: api-server
+    container_name: airflow_apiserver
     volumes: *PROJECT_VOLUME_MAPPING
     ports:
       - "8080:8080"
@@ -53,7 +53,7 @@ services:
       - airflow-init
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/api/v2/version"]
       interval: 30s
       timeout: 30s
       retries: 5
@@ -66,18 +66,34 @@ services:
     volumes: *PROJECT_VOLUME_MAPPING
     depends_on:
       - airflow-db
-      - airflow-webserver
+      - airflow-apiserver
     restart: always
 
   # 5. WORKER (Nơi chạy DockerOperator và các Image Custom)
   airflow-worker:
     <<: *AIRFLOW_COMMON_CONFIG
     container_name: airflow_worker
-    command: worker
+    command: celery worker
     volumes: *PROJECT_VOLUME_MAPPING 
     depends_on:
       - airflow-db
       - airflow-scheduler
+    restart: always
+
+  airflow-triggerer:
+    <<: *AIRFLOW_COMMON_CONFIG
+    command: triggerer
+    container_name: airflow_triggerer
+    volumes: *PROJECT_VOLUME_MAPPING
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      - airflow-db
+      - airflow-apiserver
     restart: always
   
   # 6. DỊCH VỤ API (Tùy chọn: Dùng để chạy Inference/Serving liên tục)
