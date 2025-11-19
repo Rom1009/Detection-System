@@ -1,17 +1,18 @@
 x-airflow-common: &AIRFLOW_COMMON_CONFIG
   image: apache/airflow:latest-python3.11
-  environment:
+  environment: &AIRFLOW_COMMON_ENV
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__FERNET_KEY: '' # Day la 1 doan ma auto-generated va luu tru tren server 
     AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
 
-    PYTHONPATH: /app/ai/backend/src
+    PYTHONPATH: /app/ai/backend
   user: "${AIRFLOW_UID:-50000}:0"
 
 x-project-volume: &PROJECT_VOLUME_MAPPING
   - .:/app/ai
   - ./backend/airflow/dags:/opt/airflow/dags
+  - ./backend/airflow/logs:/opt/airflow/logs
   - /var/run/docker.sock:/var/run/docker.sock
 
 
@@ -33,12 +34,14 @@ services:
   # 2. KHỞI TẠO (Database Migration và Tạo User Admin)
   airflow-init:
     <<: *AIRFLOW_COMMON_CONFIG
-    container_name: airflow_init
-    volumes: *PROJECT_VOLUME_MAPPING
-    # Cài đặt dependency Airflow và khởi tạo DB
-    entrypoint: /bin/bash -c "pip install -r /app/ai/backend/airflow/requirements.txt && airflow db migrate && airflow users create --username admin --firstname Thomas --lastname ML --role Admin --email admin@example.com --password admin"
-    depends_on:
-      - airflow-db
+    command: version
+    environment:
+      <<: *AIRFLOW_COMMON_ENV
+      _AIRFLOW_DB_MIGRATE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+
 
   # 3. WEBSERVER (Giao diện người dùng)
   airflow-apiserver:
@@ -69,16 +72,29 @@ services:
       - airflow-apiserver
     restart: always
 
-  # 5. WORKER (Nơi chạy DockerOperator và các Image Custom)
-  airflow-worker:
+  airflow-dag-processor:
     <<: *AIRFLOW_COMMON_CONFIG
-    container_name: airflow_worker
-    command: celery worker
-    volumes: *PROJECT_VOLUME_MAPPING 
-    depends_on:
-      - airflow-db
-      - airflow-scheduler
+    command: dag-processor
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type DagProcessorJob --hostname "$${HOSTNAME}"']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     restart: always
+
+  # 5. WORKER (Nơi chạy DockerOperator và các Image Custom)
+  # airflow-worker:
+  #   <<: *AIRFLOW_COMMON_CONFIG
+  #   container_name: airflow_worker
+  #   command: celery worker
+  #   volumes: *PROJECT_VOLUME_MAPPING 
+  #   depends_on:
+  #     - airflow-db
+  #     - airflow-scheduler
+  #   environment: 
+  #     AIRFLOW__CORE__EXECUTOR: LocalExecutor
+  #   restart: always
 
   airflow-triggerer:
     <<: *AIRFLOW_COMMON_CONFIG
