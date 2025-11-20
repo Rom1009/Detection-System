@@ -9,26 +9,31 @@ x-airflow-common: &AIRFLOW_COMMON_CONFIG
     PYTHONPATH: /app/ai/backend
   user: "${AIRFLOW_UID:-50000}:0"
 
-x-project-volume: &PROJECT_VOLUME_MAPPING
-  - .:/app/ai
-  - ./backend/airflow/dags:/opt/airflow/dags
-  - ./backend/airflow/logs:/opt/airflow/logs
-  - /var/run/docker.sock:/var/run/docker.sock
+  depends_on: &AIRFLOW_COMMON_DEPENDS_ON
+    airflow-db:
+      condition: service_healthy
 
+  volumes: &PROJECT_VOLUME_MAPPING
+    - .:/app/ai
+    - ./backend/airflow/dags:/opt/airflow/dags
+    - ./backend/airflow/logs:/opt/airflow/logs
+    - /var/run/docker.sock:/var/run/docker.sock
 
 services:
   # 1. DATABASE (PostgreSQL)
   airflow-db:
-    image: postgres:13
-    container_name: airflow-db
+    image: postgres:16
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
-    ports:
-      - "5433:5432"
     volumes:
       - airflow_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
     restart: always
 
   # 2. KHỞI TẠO (Database Migration và Tạo User Admin)
@@ -51,26 +56,34 @@ services:
     volumes: *PROJECT_VOLUME_MAPPING
     ports:
       - "8080:8080"
-    depends_on:
-      - airflow-db
-      - airflow-init
-    restart: always
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/api/v2/version"]
       interval: 30s
       timeout: 30s
       retries: 5
+    restart: always
+    depends_on:
+      <<: *AIRFLOW_COMMON_DEPENDS_ON
+      airflow-init: 
+        condition: service_completed_successfully
 
   # 4. SCHEDULER (Bộ lập lịch)
   airflow-scheduler:
     <<: *AIRFLOW_COMMON_CONFIG
     container_name: airflow_scheduler
     command: scheduler
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     volumes: *PROJECT_VOLUME_MAPPING
-    depends_on:
-      - airflow-db
-      - airflow-apiserver
     restart: always
+    depends_on:
+      <<: *AIRFLOW_COMMON_DEPENDS_ON
+      airflow-init: 
+        condition: service_completed_successfully
 
   airflow-dag-processor:
     <<: *AIRFLOW_COMMON_CONFIG
@@ -82,19 +95,10 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-
-  # 5. WORKER (Nơi chạy DockerOperator và các Image Custom)
-  # airflow-worker:
-  #   <<: *AIRFLOW_COMMON_CONFIG
-  #   container_name: airflow_worker
-  #   command: celery worker
-  #   volumes: *PROJECT_VOLUME_MAPPING 
-  #   depends_on:
-  #     - airflow-db
-  #     - airflow-scheduler
-  #   environment: 
-  #     AIRFLOW__CORE__EXECUTOR: LocalExecutor
-  #   restart: always
+    depends_on:
+      <<: *AIRFLOW_COMMON_DEPENDS_ON
+      airflow-init: 
+        condition: service_completed_successfully
 
   airflow-triggerer:
     <<: *AIRFLOW_COMMON_CONFIG
@@ -107,22 +111,11 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-    depends_on:
-      - airflow-db
-      - airflow-apiserver
     restart: always
-  
-  # 6. DỊCH VỤ API (Tùy chọn: Dùng để chạy Inference/Serving liên tục)
-  # backend-api:
-  #   build:
-  #     context: .
-  #     dockerfile: backend/src/Dockerfile.api # Giả sử có file Dockerfile.api
-  #   container_name: backend_api_service
-  #   ports:
-  #     - "8000:8000"
-  #   volumes:
-  #     - .:/app/repo # API cần thấy code và mô hình
-  #   restart: always
+    depends_on:
+      <<: *AIRFLOW_COMMON_DEPENDS_ON
+      airflow-init: 
+        condition: service_completed_successfully
 
 volumes:
   airflow_data:
