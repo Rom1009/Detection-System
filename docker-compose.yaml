@@ -59,42 +59,42 @@ services:
       retries: 5
 
   # 4. SCHEDULER (Bộ lập lịch)
-  airflow-scheduler:
-    <<: *AIRFLOW_COMMON_CONFIG
-    container_name: airflow_scheduler
-    command: scheduler
-    volumes: *PROJECT_VOLUME_MAPPING
-    depends_on:
-      - airflow-db
-      - airflow-apiserver
-    restart: always
+  # airflow-scheduler:
+  #   <<: *AIRFLOW_COMMON_CONFIG
+  #   container_name: airflow_scheduler
+  #   command: scheduler
+  #   volumes: *PROJECT_VOLUME_MAPPING
+  #   depends_on:
+  #     - airflow-db
+  #     - airflow-apiserver
+  #   restart: always
 
   # 5. WORKER (Nơi chạy DockerOperator và các Image Custom)
-  airflow-worker:
-    <<: *AIRFLOW_COMMON_CONFIG
-    container_name: airflow_worker
-    command: celery worker
-    volumes: *PROJECT_VOLUME_MAPPING 
-    depends_on:
-      - airflow-db
-      - airflow-scheduler
-    restart: always
+  # airflow-worker:
+  #   <<: *AIRFLOW_COMMON_CONFIG
+  #   container_name: airflow_worker
+  #   command: worker
+  #   volumes: *PROJECT_VOLUME_MAPPING 
+  #   depends_on:
+  #     - airflow-db
+  #     - airflow-scheduler
+  #   restart: always
 
-  airflow-triggerer:
-    <<: *AIRFLOW_COMMON_CONFIG
-    command: triggerer
-    container_name: airflow_triggerer
-    volumes: *PROJECT_VOLUME_MAPPING
-    healthcheck:
-      test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
-    depends_on:
-      - airflow-db
-      - airflow-apiserver
-    restart: always
+  # airflow-triggerer:
+  #   <<: *AIRFLOW_COMMON_CONFIG
+  #   command: triggerer
+  #   container_name: airflow_triggerer
+  #   volumes: *PROJECT_VOLUME_MAPPING
+  #   healthcheck:
+  #     test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 30s
+  #   depends_on:
+  #     - airflow-db
+  #     - airflow-apiserver
+  #   restart: always
   
   # 6. DỊCH VỤ API (Tùy chọn: Dùng để chạy Inference/Serving liên tục)
   # backend-api:
