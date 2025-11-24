@@ -48,10 +48,13 @@ with DAG(
         auto_remove="success",
         mount_tmp_dir=False,
         command='python /app/ai/src/ml_pipline/data_pipeline/data_collection.py',
+        environment={
+            'RCLONE_CONFIG': '/etc/rclone.conf'
+        },
         mounts=[
             Mount(
-                source='/home/dinhquy/.config/rclone/rclone.conf', 
-                target='/root/.config/rclone/rclone.conf',        
+                source='/home/thomas/.config/rclone/rclone.conf', 
+                target='/etc/rclone.conf',     
                 type='bind',
                 read_only=True 
             )
