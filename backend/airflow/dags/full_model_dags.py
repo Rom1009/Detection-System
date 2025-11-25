@@ -53,10 +53,15 @@ with DAG(
         },
         mounts=[
             Mount(
-                source='/home/thomas/.config/rclone/rclone.conf', 
+                source='/home/dinhquy/.config/rclone/rclone.conf', 
                 target='/etc/rclone.conf',     
                 type='bind',
                 read_only=True 
+            ), 
+            Mount(
+                source='/home/dinhquy/Desktop/Code/AI/Detection-System/backend/public/labelling', 
+                target='/app/ai/public/labelling', # Check lại log lỗi cũ để lấy đúng đường dẫn đích
+                type='bind'
             )
         ]
     )
