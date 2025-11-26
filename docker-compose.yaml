@@ -2,7 +2,7 @@ x-airflow-common: &AIRFLOW_COMMON_CONFIG
   image: apache/airflow:latest-python3.11
   environment: &AIRFLOW_COMMON_ENV
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
-    AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__FERNET_KEY: '' # Day la 1 doan ma auto-generated va luu tru tren server 
     AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
