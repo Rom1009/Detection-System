@@ -36,36 +36,36 @@ with DAG(
     schedule="@daily",
     catchup=False,
 ) as dag:
-    # collect_data = DockerOperator(
-    #     task_id='data_collection',
-    #     image='ml_pipeline:latest',
-    #     api_version='auto',
-    #     auto_remove="success",
-    #     mount_tmp_dir=False,
-    #     do_xcom_push=True,
-    #     command='python /app/ai/src/ml_pipline/data_pipeline/data_collection.py',
-    #     environment={
-    #         'RCLONE_CONFIG': '/etc/rclone.conf'
-    #     },
-    #     mounts=[
-    #         Mount(
-    #             source='/home/dinhquy/.config/rclone/rclone.conf', 
-    #             target='/etc/rclone.conf',     
-    #             type='bind',
-    #             read_only=True 
-    #         ), 
-    #         Mount(
-    #             source='/home/dinhquy/Desktop/Code/AI/Detection-System/backend/public/labelling', 
-    #             target='/app/ai/public/labelling', # Check lại log lỗi cũ để lấy đúng đường dẫn đích
-    #             type='bind'
-    #         )
-    #     ]
-    # )
+    collect_data = DockerOperator(
+        task_id='data_collection',
+        image='ml_pipeline:latest',
+        api_version='auto',
+        auto_remove="success",
+        mount_tmp_dir=False,
+        do_xcom_push=True,
+        command='python /app/ai/src/ml_pipline/data_pipeline/data_collection.py',
+        environment={
+            'RCLONE_CONFIG': '/etc/rclone.conf'
+        },
+        mounts=[
+            Mount(
+                source='/home/thomas/.config/rclone/rclone.conf', 
+                target='/etc/rclone.conf',     
+                type='bind',
+                read_only=True 
+            ), 
+            Mount(
+                source='/home/thomas/Desktop/AI/Detection-System/backend/public/labelling', 
+                target='/app/ai/public/labelling', # Check lại log lỗi cũ để lấy đúng đường dẫn đích
+                type='bind'
+            )
+        ]
+    )
     
-    # check_new_data = ShortCircuitOperator(
-    #     task_id = "check_new_data",
-    #     python_callable = check_if_data_updated,
-    # )
+    check_new_data = ShortCircuitOperator(
+        task_id = "check_new_data",
+        python_callable = check_if_data_updated,
+    )
     
     task_send_label_request = EmailOperator(
         task_id="send_label_request_email",
@@ -81,4 +81,4 @@ with DAG(
     )
     
     # Định nghĩa luồng chạy
-    task_send_label_request
+    collect_data >> check_new_data >> task_send_label_request
