@@ -4,3 +4,4 @@
     url = gdrive://1nwGyA8UM1XH2j_a-o0PaV7VawY7K0Xj9
     gdrive_use_service_account = true
     gdrive_acknowledge_abuse = true
+    gdrive_service_account_json_file_path = ../gen-lang-client-0839403089-1d0928787708.json
