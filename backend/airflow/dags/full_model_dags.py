@@ -22,6 +22,12 @@ if project_root not in sys.path:
 YOUR_EMAIL = "japanesegirl2002@gmail.com"
 PROJECT_PATH = '/home/dinhquy/Desktop/Code/AI/Detection-System'
 
+shared_mount = Mount(
+    source=PROJECT_PATH, 
+    target='/app',     
+    type='bind',
+)
+
 def check_if_data_updated(**context):
     logs = context["ti"].xcom_pull(task_ids = "data_collection", key='return_value')
     if logs and "STATUS: DATA_UPDATED" in logs:
@@ -110,53 +116,33 @@ with DAG(
     
     dvc_task = DockerOperator(
         task_id="dvc_pull_and_add",
-        image="dvc_tools:latest",   # Sửa 'images' thành 'image'
+        image="dvc_tools:latest",
         api_version="auto",
         auto_remove="success",
         network_mode="bridge",
         mount_tmp_dir=False,
-        # Lệnh phức hợp: Config git safe -> Pull -> Add -> Git Add
-        working_dir= "/app",
-        command='dvc pull', 
-        environment={
-            'GOOGLE_APPLICATION_CREDENTIALS': '/app/gen-lang-client-0839403089-1d0928787708.json'
-        },
+        working_dir="/app",
+        command='dvc pull',
+
         mounts=[
-            # MOUNT TOÀN BỘ PROJECT VÀO /app
-            # Để container thấy được .git, .dvc, data, và code
-            Mount(
-                source=PROJECT_PATH, 
-                target='/app',     
-                type='bind',
-                read_only=False # Phải cho ghi để dvc tạo file .dvc mới
-            ), 
+            shared_mount
+        ]
+    )
+        
+    
+    machine_learning_pipeline = DockerOperator(
+        task_id = "machine_learning_pipeline", 
+        api_version = "auto",
+        image = "ml_pipeline:latest", 
+        auto_remove = "success",
+        mount_tmp_dir=False,
+        network_mode="bridge",
+        working_dir="/app",
+        command = "dvc repro -f", 
+        mounts=[
+            shared_mount
         ]
     )
     
-    
-    # machine_learning_pipeline = DockerOperator(
-    #     task_id = "machine learning pipeline", 
-    #     api_version = "auto",
-    #     image = "ml_pipeline:latest", 
-    #     auto_remove = "success",
-    #     mount_tmp_dir=False,
-    #     network_mode="bridge",
-    #     command = "dvc repro", 
-    #     mounts=[
-    #         Mount(
-    #             source='/home/dinhquy/Desktop/Code/AI/Detection-System/.git', 
-    #             target='/etc/rclone.conf',     
-    #             type='bind',
-    #             read_only=True 
-    #         ), 
-    #         Mount(
-    #             source='/home/dinhquy/Desktop/Code/AI/Detection-System/.dvc', 
-    #             target='/etc/rclone.conf',     
-    #             type='bind',
-    #             read_only=True 
-    #         ), 
-    #     ]
-    # )
-    
     # Định nghĩa luồng chạy
-    dvc_task
+    dvc_task >> machine_learning_pipeline

@@ -1,4 +1,11 @@
 stages:
+  data_annotation: 
+    cmd: python backend/src/ml_pipeline/data_pipeline/data_extraction.py --params params.yaml
+    deps:
+      - backend/public/data
+    outs:
+      - backend/public/processed/annotations.json
+
   data_processing:
     cmd: python backend/src/ml_pipeline/data_pipeline/data_processing.py --params params.yaml
     deps: 
@@ -16,5 +23,3 @@ stages:
       - backend/src/ml_pipeline/main.py
       - backend/public/processed/train_ids.json
       - backend/public/processed/valid_ids.json
-    outs: 
-      - backend/src/ml_pipeline/model/model.pth
