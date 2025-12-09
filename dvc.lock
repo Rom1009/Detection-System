@@ -114,8 +114,8 @@ stages:
     deps:
     - path: backend/public/processed/annotations.json
       hash: md5
-      md5: 3300f6c190a37f9a614ae8fe0e4e42de
-      size: 106576507
+      md5: ff0190fb324d2ad78d37056268d83283
+      size: 106576477
     - path: backend/src/ml_pipeline/data_pipeline/data_processing.py
       hash: md5
       md5: a9c0e99cfaee0b08653a4a2488c61653
@@ -136,3 +136,32 @@ stages:
       hash: md5
       md5: 744149cf634ac121fcb724ee8ff8950b
       size: 1441
+  data_annotation:
+    cmd: python backend/src/ml_pipeline/data_pipeline/data_extraction.py 
+      --params params.yaml
+    deps:
+    - path: backend/public/data
+      hash: md5
+      md5: add17345a04000898f3b6ffa28db54a1.dir
+      size: 1726275459
+      nfiles: 2420
+    outs:
+    - path: backend/public/processed/annotations.json
+      hash: md5
+      md5: ff0190fb324d2ad78d37056268d83283
+      size: 106576477
+  main:
+    cmd: python -m backend.src.ml_pipeline.main
+    deps:
+    - path: backend/public/processed/train_ids.json
+      hash: md5
+      md5: fee7abbeda0713defa89c6384fd8d125
+      size: 4772
+    - path: backend/public/processed/valid_ids.json
+      hash: md5
+      md5: 744149cf634ac121fcb724ee8ff8950b
+      size: 1441
+    - path: backend/src/ml_pipeline/main.py
+      hash: md5
+      md5: 7c324339110c3072edc5692162f3f4a6
+      size: 3748
