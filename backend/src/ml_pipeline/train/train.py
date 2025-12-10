@@ -4,6 +4,7 @@ import mlflow
 import mlflow.pytorch
 import torch.nn.functional as F
 from backend.src.ml_pipeline.evaluation.evaluation import calculate_metrics_multiclass
+from mlflow.models.signature import infer_signature
 
 # ... (Hàm train và validate giữ nguyên) ...
 
@@ -69,6 +70,8 @@ def validate(valid_data_loader, model, criterion, device, num_classes):
 def run(train_data_loader, valid_data_loader, model, criterion, optimizer,
         lr_scheduler, device, num_epochs, num_classes, hparams): # ⭐ 1. Thêm lr_scheduler vào tham số
     
+    REGISTRY_MODEL_NAME = "My_Defect_Detector"
+    
     with mlflow.start_run(run_name=hparams.get("run_name", "default_run")):
         
         print("MLflow Run started...")
@@ -108,9 +111,31 @@ def run(train_data_loader, valid_data_loader, model, criterion, optimizer,
                 torch.save(model.state_dict(), model_path)
                 print(f"  🎉 New best model saved with IoU: {best_iou:.4f}")
                 
-                mlflow.log_artifact(model_path)
-        
+        print("\nTraining complete. Processing best model for Registry...")
         mlflow.log_metric("best_valid_iou", best_iou)
+        
+        model.load_state_dict(torch.load('best_model.pth'))
+        
+        dummy_input, _ = next(iter(valid_data_loader))
+        dummy_input = dummy_input.to(device)
+        signature = infer_signature(dummy_input.cpu().numpy(), model(dummy_input).detach().cpu().numpy())
+        
+        
+        model_info = mlflow.pytorch.log_model(
+            pytorch_model=model,
+            artifact_path="model",
+            signature=signature,
+            registered_model_name=REGISTRY_MODEL_NAME  # <--- ĐÂY LÀ CHÌA KHÓA
+        )
+        
+        client = mlflow.tracking.MlflowClient()
+        client.set_registered_model_alias(
+            name=REGISTRY_MODEL_NAME, 
+            alias="Candidate", 
+            version=model_info.registered_model_version
+        )
+        
+        print(f"✅ Model registered as '{REGISTRY_MODEL_NAME}' version {model_info.registered_model_version}")
+        print(f"✅ Tagged as alias: 'Candidate'")
 
-    print("\nTraining complete.")
-    print(f"Best validation IoU achieved: {best_iou:.4f}")
+    return best_iou

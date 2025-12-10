@@ -14,7 +14,7 @@ from backend.src.ml_pipeline.dataset import Img_Segmentation_Dataset, train_tran
 # ===================================================================
 NUM_EPOCHS = 20
 NUM_CLASSES = 4
-BATCH_SIZE = 8 # ⭐ 3. Định nghĩa BATCH_SIZE ở một nơi
+BATCH_SIZE = 4 # ⭐ 3. Định nghĩa BATCH_SIZE ở một nơi
 
 # --- Sửa lại đường dẫn: DVC chạy từ thư mục gốc của dự án ---
 # Vì vậy, không cần '../'

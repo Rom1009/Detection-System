@@ -23,6 +23,7 @@ x-airflow-common: &AIRFLOW_COMMON_CONFIG
     - ./backend/airflow/dags:/opt/airflow/dags
     - ./backend/airflow/logs:/opt/airflow/logs
     - /var/run/docker.sock:/var/run/docker.sock
+    - /home/dinhquy/Desktop/Code/AI/Detection-System/done_labeling:/opt/airflow/data/done_labeling
 
 services:
   # 1. DATABASE (PostgreSQL)
