@@ -17,4 +17,4 @@ mlruns/
 
 backend/airflow/logs
 backend/airflow
-gdrive_sa.json.json
+gdrive_sa.json

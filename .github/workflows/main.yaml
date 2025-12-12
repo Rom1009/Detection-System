@@ -34,7 +34,7 @@ jobs:
         GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
       run: |
         # Tạo file json credential từ secret
-        echo "$GDRIVE_CREDENTIALS_DATA" > gdrive_sa.json
+        echo "$GDRIVE_CREDENTIALS_DATA" | base64 -d > gdrive_sa.json
         
         # Cấu hình dvc để dùng file này (giả sử remote tên là 'myremote')
         dvc remote modify --local myremote gdrive_use_service_account true
