@@ -47,7 +47,7 @@ jobs:
       # Chạy test (giả sử bạn dùng pytest)
       run: |
         pip install pytest
-        pytest tests/
+        pytest backend/tests/
 
   # JOB 2: BUILD DOCKER IMAGE
   build-push:
