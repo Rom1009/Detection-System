@@ -15,8 +15,6 @@ node_modules
 
 mlruns/
 
-backend/public/labelling/gen-lang-client-0839403089-1d0928787708.json
-
 backend/airflow/logs
 backend/airflow
-gen-lang-client-0839403089-1d0928787708.json
+gdrive_sa.json.json
