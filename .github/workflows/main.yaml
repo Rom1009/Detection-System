@@ -75,8 +75,3 @@ jobs:
           push: true
           # Thay đổi tên image của bạn ở dưới
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ml_pipeline:latest
-
-
-
-
-

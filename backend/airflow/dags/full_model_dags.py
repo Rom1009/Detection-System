@@ -19,7 +19,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 YOUR_EMAIL = "japanesegirl2002@gmail.com"
-PROJECT_PATH = '/home/dinhquy/Desktop/Code/AI/Detection-System'
+PROJECT_PATH = '/home/thomas/Desktop/AI/Detection-System'
 
 shared_mount = Mount(
     source=PROJECT_PATH, 
@@ -68,8 +68,17 @@ with DAG(
         command='python /app/ai/src/ml_pipline/data_pipeline/data_collection.py',
         environment={'RCLONE_CONFIG': '/etc/rclone.conf'},
         mounts=[
-            Mount(source='/home/dinhquy/.config/rclone/rclone.conf', target='/etc/rclone.conf', type='bind', read_only=True), 
-            Mount(source='/home/dinhquy/Desktop/Code/AI/Detection-System/backend/public/labelling', target='/app/ai/public/labelling', type='bind')
+            Mount(
+                source='/home/thomas/.config/r  clone/rclone.conf', 
+                target='/etc/rclone.conf',     
+                type='bind',
+                read_only=True 
+            ), 
+            Mount(
+                source='/home/thomas/Desktop/AI/Detection-System/backend/public/labelling', 
+                target='/app/ai/public/labelling', # Check lại log lỗi cũ để lấy đúng đường dẫn đích
+                type='bind'
+            )
         ]
     )
     
