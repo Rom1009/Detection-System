@@ -27,13 +27,7 @@ jobs:
         env:
           GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
           GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
-          GDRIVE_TOKEN_DATA: ${{ secrets.GDRIVE_TOKEN_DATA }}
         run: |
-          # 1. Kiểm tra an toàn: Đảm bảo Secret Token đã được nạp
-          if [ -z "$GDRIVE_TOKEN_DATA" ]; then
-            echo "❌ LỖI: Secret GDRIVE_TOKEN_DATA đang bị rỗng. Hãy kiểm tra lại trên GitHub Settings."
-            exit 1
-          fi
 
           # 2. Đảm bảo Remote tồn tại (Fix lỗi remote not found)
           # Nếu bạn chưa push file .dvc/config chứa url, dòng này sẽ tự thêm vào tạm thời để chạy
@@ -52,7 +46,6 @@ jobs:
           # Ghi nội dung từ Secret ra file vật lý
           # Dùng EOF để đảm bảo JSON không bị lỗi ký tự
           cat <<EOF > .dvc/tmp/gdrive-user-credentials.json
-          $GDRIVE_TOKEN_DATA
           EOF
 
           # 5. Ép DVC dùng file token vừa tạo (Để bypass đăng nhập trình duyệt)
