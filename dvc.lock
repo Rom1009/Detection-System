@@ -114,8 +114,8 @@ stages:
     deps:
     - path: backend/public/processed/annotations.json
       hash: md5
-      md5: ff0190fb324d2ad78d37056268d83283
-      size: 106576477
+      md5: 7db7136b917657128b08019a688a2464
+      size: 106576507
     - path: backend/src/ml_pipeline/data_pipeline/data_processing.py
       hash: md5
       md5: a9c0e99cfaee0b08653a4a2488c61653
@@ -148,8 +148,8 @@ stages:
     outs:
     - path: backend/public/processed/annotations.json
       hash: md5
-      md5: ff0190fb324d2ad78d37056268d83283
-      size: 106576477
+      md5: 7db7136b917657128b08019a688a2464
+      size: 106576507
   main:
     cmd: python -m backend.src.ml_pipeline.main
     deps:
