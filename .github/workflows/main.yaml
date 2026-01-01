@@ -23,34 +23,44 @@ jobs:
 
       # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
       # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
-      - name: Setup DVC with Custom Credentials
+      - name: Setup DVC (OAuth Method - Full Config)
         env:
-          # Lấy nội dung file bạn gửi từ Secret
-          GDRIVE_APP_CREDENTIALS: ${{ secrets.GDRIVE_APP_CREDENTIALS }}
-          # Vẫn cần token data để bypass login (lấy từ .dvc/tmp/gdrive-user-credentials.json máy bạn)
-          GDRIVE_TOKEN_DATA: ${{ secrets.GDRIVE_TOKEN_DATA }} 
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_TOKEN_DATA: ${{ secrets.GDRIVE_TOKEN_DATA }}
         run: |
-          # 1. TẠO FILE CREDENTIALS.JSON (Đúng yêu cầu của bạn)
-          # Lệnh này sẽ tạo ra file credentials.json y hệt file bạn gửi
-          echo "$GDRIVE_APP_CREDENTIALS" > credentials.json
+          # 1. Kiểm tra an toàn: Đảm bảo Secret Token đã được nạp
+          if [ -z "$GDRIVE_TOKEN_DATA" ]; then
+            echo "❌ LỖI: Secret GDRIVE_TOKEN_DATA đang bị rỗng. Hãy kiểm tra lại trên GitHub Settings."
+            exit 1
+          fi
 
-          # 2. Cấu hình DVC sử dụng file này
-          # Thay vì dùng client_id lẻ tẻ, ta chỉ đường dẫn thẳng vào file này
-          dvc remote modify --local myremote gdrive_authenticator credentials.json
+          # 2. Đảm bảo Remote tồn tại (Fix lỗi remote not found)
+          # Nếu bạn chưa push file .dvc/config chứa url, dòng này sẽ tự thêm vào tạm thời để chạy
+          # Thay 'myremote' bằng tên remote của bạn. Thay XXX bằng ID Folder Drive của bạn nếu cần.
+          # (Lệnh này có cờ -f để nếu có rồi thì nó bỏ qua, không báo lỗi)
+          # dvc remote add -d -f myremote gdrive://ID_THU_MUC_DRIVE_CUA_BAN
 
-          # -----------------------------------------------------------
-          # LƯU Ý QUAN TRỌNG: Để không bị lỗi "Operation canceled" (treo máy),
-          # bạn vẫn CẦN file token user (file chứa refresh_token) đi kèm.
-          # -----------------------------------------------------------
-          
-          # Tạo thư mục tmp
+          # 3. Cấu hình Client ID và Secret (Định danh Ứng dụng)
+          dvc remote modify --local myremote gdrive_client_id "$GDRIVE_CLIENT_ID"
+          dvc remote modify --local myremote gdrive_client_secret "$GDRIVE_CLIENT_SECRET"
+
+          # 4. Tái tạo file Token (Định danh Người dùng - "Vé xe")
+          # Tạo thư mục .dvc/tmp nếu chưa có
           mkdir -p .dvc/tmp
           
-          # Tạo file token user (lấy từ máy local của bạn đưa lên secret)
-          echo "$GDRIVE_TOKEN_DATA" > .dvc/tmp/gdrive-user-credentials.json
-          
-          # Trỏ DVC vào file token user
+          # Ghi nội dung từ Secret ra file vật lý
+          # Dùng EOF để đảm bảo JSON không bị lỗi ký tự
+          cat <<EOF > .dvc/tmp/gdrive-user-credentials.json
+          $GDRIVE_TOKEN_DATA
+          EOF
+
+          # 5. Ép DVC dùng file token vừa tạo (Để bypass đăng nhập trình duyệt)
           dvc remote modify --local myremote gdrive_user_credentials_file .dvc/tmp/gdrive-user-credentials.json
+
+          # 6. Kiểm tra kết nối thử (Debug)
+          echo "Đang thử kết nối tới Google Drive..."
+          dvc ls myremote || echo "⚠️ Cảnh báo: Kết nối thất bại. Kiểm tra lại token."
       # 4. Kéo dữ liệu về (nếu cần) và Chạy Pipeline
       - name: Run DVC Pipeline
         run: |
