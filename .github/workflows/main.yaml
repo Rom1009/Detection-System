@@ -1,77 +1,56 @@
-name: AI Pipeline CI/CD
+name: Model Training Pipeline
 
-on: 
-  push:
-    branches: ["main", "dev"]
-  pull_request:
-    branches: ["main", "dev"]
+on: [push] # Chạy mỗi khi có code mới được push
 
 jobs:
-  test:
+  run-training:
     runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code 
-      uses: actions/checkout@v4
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.10"
-
-    - name: Install Dependencies
-      run: |
-          python -m pip install --upgrade pip
-          # Cài dvc với gdrive support
-          pip install "dvc[gdrive]"
-          # Cài các thư viện khác (lưu ý đường dẫn file req)
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          # Nếu file req nằm trong folder backend thì sửa thành:
-          # if [ -f backend/requirements.txt ]; then pip install -r backend/requirements.txt; fi
-
-    - name: Setup DVC Credentials
-      env:
-        GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
-      run: |
-        # Tạo file json credential từ secret
-        echo "$GDRIVE_CREDENTIALS_DATA" | base64 -d > gdrive_sa.json
-        
-        # Cấu hình dvc để dùng file này (giả sử remote tên là 'myremote')
-        dvc remote modify --local myremote gdrive_use_service_account true
-        dvc remote modify --local myremote gdrive_service_account_json_file_path gdrive_sa.json
-
-    - name: Pull Data from DVC
-      run: dvc pull
-
-    - name: Run Tests
-      # Chạy test (giả sử bạn dùng pytest)
-      run: |
-        pip install pytest
-        pytest backend/tests/
-
-  # JOB 2: BUILD DOCKER IMAGE
-  build-push:
-    needs: test # Chỉ chạy khi test pass
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' # Chỉ build khi push vào nhánh main
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      # 1. Cài đặt Python & CML
+      - uses: actions/setup-python@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          python-version: '3.9'
+      - uses: iterative/setup-cml@v1
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      # 2. Cài đặt thư viện
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install dvc[gdrive] # Nhớ cài gói hỗ trợ gdrive
 
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          # Thay đổi tên image của bạn ở dưới
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ml_pipeline:latest
+      # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
+      # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
+      - name: Setup Google Drive Credentials
+        run: |
+          echo '${{ secrets.GDRIVE_CREDENTIALS_DATA }}' > credential.json
+          
+          # Cấu hình DVC dùng file này (giống hệt lúc làm dưới local)
+          dvc remote modify storage --local gdrive_use_service_account true
+          dvc remote modify storage --local gdrive_service_account_json_file_path credential.json
+
+      # 4. Kéo dữ liệu về (nếu cần) và Chạy Pipeline
+      - name: Run DVC Pipeline
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Pull dữ liệu về (nếu data gốc lưu trên Drive)
+          dvc pull 
+          
+          # Chạy training
+          dvc repro 
+
+      # 5. Báo cáo kết quả (CML Report)
+      - name: Write CML Report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## Model Metrics" >> report.md
+          
+          # Giả sử lệnh dvc metrics diff in ra bảng so sánh
+          dvc metrics diff --show-md >> report.md
+          
+          # Đăng comment vào bài commit/PR
+          cml comment create report.md
