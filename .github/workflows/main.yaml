@@ -18,7 +18,7 @@ jobs:
       # 2. Cài đặt thư viện
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install -r backend/requirements.txt
           pip install dvc[gdrive] # Nhớ cài gói hỗ trợ gdrive
 
       # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
