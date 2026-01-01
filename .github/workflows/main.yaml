@@ -23,13 +23,26 @@ jobs:
 
       # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
       # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
-      - name: Setup Google Drive Credentials
+      - name: Setup DVC Remote (OAuth Method)
+        env:
+          # Lấy bí mật từ GitHub
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_TOKEN_DATA: ${{ secrets.GDRIVE_TOKEN_DATA }}
         run: |
-          echo '${{ secrets.GDRIVE_CREDENTIALS_DATA }}' > credential.json
+          # 1. Cấu hình Client ID và Secret cho remote 'myremote'
+          dvc remote modify myremote --local gdrive_client_id "$GDRIVE_CLIENT_ID"
+          dvc remote modify myremote --local gdrive_client_secret "$GDRIVE_CLIENT_SECRET"
+
+          # 2. Quan trọng: Tái tạo file chứa Token (để không bị hỏi login)
+          # Tạo thư mục tmp nếu chưa có
+          mkdir -p .dvc/tmp
           
-          # Cấu hình DVC dùng file này (giống hệt lúc làm dưới local)
-          dvc remote modify storage --local gdrive_use_service_account true
-          dvc remote modify storage --local gdrive_service_account_json_file_path credential.json
+          # Ghi nội dung token từ Secret ra file vật lý
+          echo "$GDRIVE_TOKEN_DATA" > .dvc/tmp/gdrive-user-credentials.json
+
+          # 3. Chỉ định DVC dùng file token này (phòng hờ DVC không tự tìm thấy)
+          dvc remote modify myremote --local gdrive_user_credentials_file .dvc/tmp/gdrive-user-credentials.json
 
       # 4. Kéo dữ liệu về (nếu cần) và Chạy Pipeline
       - name: Run DVC Pipeline
