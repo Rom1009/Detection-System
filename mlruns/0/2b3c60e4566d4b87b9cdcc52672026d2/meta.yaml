@@ -1,0 +1,14 @@
+artifact_uri: file:///home/thomas/Desktop/AI/Detection-System/mlruns/0/2b3c60e4566d4b87b9cdcc52672026d2/artifacts
+end_time: 1764680424471
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 2b3c60e4566d4b87b9cdcc52672026d2
+run_name: DeepLab_ResNet50_lr_1e-4_weighted
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764680422430
+status: 4
+tags: []
+user_id: thomas
