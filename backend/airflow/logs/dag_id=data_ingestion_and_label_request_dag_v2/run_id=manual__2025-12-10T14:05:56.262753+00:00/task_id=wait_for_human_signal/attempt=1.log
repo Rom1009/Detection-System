@@ -1,0 +1,5 @@
+{"timestamp":"2025-12-10T14:06:18.116107Z","level":"info","event":"DAG bundles loaded: dags-folder","logger":"airflow.dag_processing.bundles.manager.DagBundlesManager","filename":"manager.py","lineno":179}
+{"timestamp":"2025-12-10T14:06:18.118579Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/full_model_dags.py","logger":"airflow.models.dagbag.DagBag","filename":"dagbag.py","lineno":593}
+{"timestamp":"2025-12-10T14:06:18.481663Z","level":"warning","event":"Skipping masking for a secret as it's too short (<5 chars)","logger":"airflow.sdk._shared.secrets_masker.secrets_masker","filename":"secrets_masker.py","lineno":546}
+{"timestamp":"2025-12-10T14:06:18.489407Z","level":"info","event":"Poking for file /home/thomas/Desktop/AI/Detection-System/done_labeling","logger":"airflow.task.operators.airflow.providers.standard.sensors.filesystem.FileSensor","filename":"filesystem.py","lineno":125}
+{"timestamp":"2025-12-10T14:06:18.490790Z","level":"info","event":"Rescheduling task, marking task as UP_FOR_RESCHEDULE","logger":"task","filename":"task_runner.py","lineno":953}
