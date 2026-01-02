@@ -23,7 +23,7 @@ jobs:
 
       # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
       # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
-     - name: Setup DVC (Service Account Method - Best Practice)
+      - name: Setup DVC (Service Account Method - Best Practice)
         env:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
         run: |
