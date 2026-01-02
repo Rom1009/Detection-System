@@ -12,50 +12,43 @@ jobs:
       # 1. Cài đặt Python & CML
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.9'
       - uses: iterative/setup-cml@v1
 
       # 2. Cài đặt thư viện
       - name: Install dependencies
         run: |
-          pip install -r backend/requirements.txt
+          pip install -r requirements.txt
           pip install dvc[gdrive] # Nhớ cài gói hỗ trợ gdrive
 
       # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
       # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
-      - name: Setup DVC (OAuth Method - Full Config)
+     - name: Setup DVC (Service Account Method - Best Practice)
         env:
-          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
-          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
         run: |
+          # 1. Tạo file Service Account từ Secret
+          echo "$GDRIVE_CREDENTIALS_DATA" > service-account.json
 
-          # 2. Đảm bảo Remote tồn tại (Fix lỗi remote not found)
-          # Nếu bạn chưa push file .dvc/config chứa url, dòng này sẽ tự thêm vào tạm thời để chạy
-          # Thay 'myremote' bằng tên remote của bạn. Thay XXX bằng ID Folder Drive của bạn nếu cần.
-          # (Lệnh này có cờ -f để nếu có rồi thì nó bỏ qua, không báo lỗi)
-          # dvc remote add -d -f myremote gdrive://ID_THU_MUC_DRIVE_CUA_BAN
+          # 2. XÓA SẠCH cấu hình OAuth cũ (để tránh xung đột)
+          # (DVC sẽ ưu tiên Service Account nếu cấu hình đúng, nhưng xóa đi cho chắc)
+          dvc remote modify --local myremote --unset gdrive_client_id || true
+          dvc remote modify --local myremote --unset gdrive_client_secret || true
+          dvc remote modify --local myremote --unset gdrive_user_credentials_file || true
+          dvc remote modify --local myremote --unset gdrive_authenticator || true
 
-          # 3. Cấu hình Client ID và Secret (Định danh Ứng dụng)
-          dvc remote modify --local myremote gdrive_client_id "$GDRIVE_CLIENT_ID"
-          dvc remote modify --local myremote gdrive_client_secret "$GDRIVE_CLIENT_SECRET"
+          # 3. KÍCH HOẠT chế độ Service Account
+          dvc remote modify --local myremote gdrive_use_service_account true
+          dvc remote modify --local myremote gdrive_service_account_json_file_path service-account.json
 
-          # 4. Tái tạo file Token (Định danh Người dùng - "Vé xe")
-          # Tạo thư mục .dvc/tmp nếu chưa có
-          mkdir -p .dvc/tmp
-          
-          # Ghi nội dung từ Secret ra file vật lý
-          # Dùng EOF để đảm bảo JSON không bị lỗi ký tự
-          cat <<EOF > .dvc/tmp/gdrive-user-credentials.json
-          EOF
+          # 4. Kiểm tra kết nối (Debug)
+          echo "Đang thử kết nối Drive bằng Service Account..."
+          dvc ls myremote || echo "⚠️ Nếu lỗi, hãy kiểm tra xem bạn đã Share Folder Drive cho email service account chưa?"
 
-          # 5. Ép DVC dùng file token vừa tạo (Để bypass đăng nhập trình duyệt)
-          dvc remote modify --local myremote gdrive_user_credentials_file .dvc/tmp/gdrive-user-credentials.json
-
-          # 6. Kiểm tra kết nối thử (Debug)
-          echo "Đang thử kết nối tới Google Drive..."
-          dvc ls myremote || echo "⚠️ Cảnh báo: Kết nối thất bại. Kiểm tra lại token."
       # 4. Kéo dữ liệu về (nếu cần) và Chạy Pipeline
       - name: Run DVC Pipeline
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Pull dữ liệu về (nếu data gốc lưu trên Drive)
           dvc pull 
