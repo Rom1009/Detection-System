@@ -9,7 +9,6 @@ backend/public/data/
 backend/public/labelling/
 
 # BUT, do NOT ignore the DVC pointer file for it!
-!backend/public/data.dvc
 
 node_modules
 
