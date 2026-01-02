@@ -30,21 +30,9 @@ jobs:
           # 1. Tạo file Service Account từ Secret
           echo "$GDRIVE_CREDENTIALS_DATA" > service-account.json
 
-          # 2. XÓA SẠCH cấu hình OAuth cũ (để tránh xung đột)
-          # (DVC sẽ ưu tiên Service Account nếu cấu hình đúng, nhưng xóa đi cho chắc)
-          dvc remote modify --local myremote --unset gdrive_client_id || true
-          dvc remote modify --local myremote --unset gdrive_client_secret || true
-          dvc remote modify --local myremote --unset gdrive_user_credentials_file || true
-          dvc remote modify --local myremote --unset gdrive_authenticator || true
-
-          # 3. KÍCH HOẠT chế độ Service Account
+          # 2. KÍCH HOẠT chế độ Service Account
           dvc remote modify --local myremote gdrive_use_service_account true
           dvc remote modify --local myremote gdrive_service_account_json_file_path service-account.json
-
-          # 4. Kiểm tra kết nối (Debug)
-          echo "Đang thử kết nối Drive bằng Service Account..."
-          dvc ls myremote || echo "⚠️ Nếu lỗi, hãy kiểm tra xem bạn đã Share Folder Drive cho email service account chưa?"
-
       # 4. Kéo dữ liệu về (nếu cần) và Chạy Pipeline
       - name: Run DVC Pipeline
         env:
@@ -64,7 +52,7 @@ jobs:
           echo "## Model Metrics" >> report.md
           
           # Giả sử lệnh dvc metrics diff in ra bảng so sánh
-          dvc metrics diff --show-md >> report.md
+          dvc metrics diff --md >> report.md
           
           # Đăng comment vào bài commit/PR
           cml comment create report.md
