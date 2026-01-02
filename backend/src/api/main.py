@@ -10,7 +10,8 @@ config_logging(LogLevels.INFO)
 
 
 def create_app():
-    app = FastAPI(title="Universal Modular FastAPI")
+    app = FastAPI(
+        title="Universal Modular FastAPI")
     register_modules(app)
     logging.info("This is info")
     return app
