@@ -1,7 +1,1 @@
 # Smart Defect Detection System
-
-
-
-
-
-
