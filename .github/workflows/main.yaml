@@ -5,6 +5,11 @@ on: [push] # Chạy mỗi khi có code mới được push
 jobs:
   run-training:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
     
     steps:
       - uses: actions/checkout@v3
