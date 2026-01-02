@@ -1,0 +1,7 @@
+{"timestamp":"2025-11-06T14:14:16.782507Z","level":"info","event":"DAG bundles loaded: dags-folder","logger":"airflow.dag_processing.bundles.manager.DagBundlesManager","filename":"manager.py","lineno":179}
+{"timestamp":"2025-11-06T14:14:16.783985Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/full_model_dags.py","logger":"airflow.models.dagbag.DagBag","filename":"dagbag.py","lineno":593}
+{"timestamp":"2025-11-06T14:14:16.971855Z","level":"warning","event":"The `airflow.decorators.dag` attribute is deprecated. Please use `'airflow.sdk.dag'`.","category":"DeprecatedImportWarning","filename":"/opt/airflow/dags/full_model_dags.py","lineno":4,"logger":"py.warnings"}
+{"timestamp":"2025-11-06T14:14:17.607461Z","level":"info","event":"--- Start Data Collection from Google Drive","logger":"task.stdout"}
+{"timestamp":"2025-11-06T14:14:17.927427Z","level":"error","event":"2025/11/06 14:14:17 Failed to load config file \"/home/airflow/.config/rclone/rclone.conf\": open /home/airflow/.config/rclone/rclone.conf: permission denied","logger":"task.stderr"}
+{"timestamp":"2025-11-06T14:14:17.935394Z","level":"error","event":"Error when sync data: Command '['rclone', 'sync', 'img_seg:DVC/new_data', '../../../public/labelling', '--progress']' returned non-zero exit status 1.","logger":"task.stderr"}
+{"timestamp":"2025-11-06T14:14:17.935359Z","level":"error","event":"Task exited","exit_code":1,"logger":"task","filename":"task_runner.py","lineno":990}

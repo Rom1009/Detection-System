@@ -1,0 +1,63 @@
+name: Model Training Pipeline
+
+on: [push] # Chạy mỗi khi có code mới được push
+
+jobs:
+  run-training:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      # 1. Cài đặt Python & CML
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - uses: iterative/setup-cml@v1
+
+      # 2. Cài đặt thư viện
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          pip install dvc[gdrive] # Nhớ cài gói hỗ trợ gdrive
+
+      # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
+      # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
+      - name: Setup DVC (Service Account Method - Best Practice)
+        env:
+          GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
+        run: |
+          # 1. Tạo file Service Account từ Secret
+          echo "$GDRIVE_CREDENTIALS_DATA" > service-account.json
+
+          # 2. KÍCH HOẠT chế độ Service Account
+          dvc remote modify --local myremote gdrive_use_service_account true
+          dvc remote modify --local myremote gdrive_service_account_json_file_path service-account.json
+      # 4. Kéo dữ liệu về (nếu cần) và Chạy Pipeline
+      - name: Run DVC Pipeline
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Pull dữ liệu về (nếu data gốc lưu trên Drive)
+          dvc pull 
+          
+          # Chạy training
+          dvc repro 
+
+      # 5. Báo cáo kết quả (CML Report)
+      - name: Write CML Report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## Model Metrics" >> report.md
+          
+          # Giả sử lệnh dvc metrics diff in ra bảng so sánh
+          dvc metrics diff --md >> report.md
+          
+          # Đăng comment vào bài commit/PR
+          cml comment create report.md
