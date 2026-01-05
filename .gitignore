@@ -18,3 +18,5 @@ mlruns/
 backend/airflow/logs
 backend/airflow
 gdrive_sa.json
+
+kaggle.json

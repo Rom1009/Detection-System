@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter
 from auth.module import AuthModule
+from predict.module import PredictModule
 
 def register_modules(app: FastAPI):
     
@@ -7,6 +8,7 @@ def register_modules(app: FastAPI):
     
     modules = [
         AuthModule(),
+        PredictModule(),
         # Thêm Module khác ở đây
     ]
 

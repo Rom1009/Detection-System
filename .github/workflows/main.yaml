@@ -12,13 +12,17 @@ jobs:
       issues: write
     
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
       # 1. Cài đặt Python & CML
-      - uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-      - uses: iterative/setup-cml@v1
+
+      - name: Setup CML
+        uses: iterative/setup-cml@v1
 
       # 2. Cài đặt thư viện
       - name: Install dependencies
@@ -40,6 +44,13 @@ jobs:
           dvc remote modify --local myremote gdrive_service_account_json_file_path service-account.json
       # 4. Kéo dữ liệu về (nếu cần) và Chạy Pipeline
       - name: Run DVC Pipeline
+        uses: KevKibe/kaggle-script-action@v1.0.5
+        with:
+          username: ${{ secrets.KAGGLE_USERNAME }}
+          key: ${{ secrets.KAGGLE_KEY }}
+          title: "Run DVC Training Pipeline"
+          enable_gpu: true
+          enable_internet: true
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
