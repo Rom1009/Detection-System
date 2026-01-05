@@ -45,21 +45,22 @@ jobs:
       # 4. Kéo dữ liệu về (nếu cần) và Chạy Pipeline
       - name: Run DVC Pipeline
         uses: KevKibe/kaggle-script-action@v1.0.5
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           username: ${{ secrets.KAGGLE_USERNAME }}
           key: ${{ secrets.KAGGLE_KEY }}
           title: "Run DVC Training Pipeline"
           enable_gpu: true
           enable_internet: true
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Pull dữ liệu về (nếu data gốc lưu trên Drive)
-          dvc pull 
-          
-          # Chạy training
-          dvc repro 
-
+          custom_script: | 
+            echo "Đang tải dữ liệu..."
+            dvc pull
+            
+            # 4. Chạy Training (DVC Repro sẽ tự gọi lệnh python train.py định nghĩa trong dvc.yaml)
+            echo "Bắt đầu train..."
+            dvc repro
+        
       # 5. Báo cáo kết quả (CML Report)
       - name: Write CML Report
         env:
