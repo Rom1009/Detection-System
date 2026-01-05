@@ -32,33 +32,46 @@ jobs:
 
       # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
       # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
-      - name: Setup DVC (Service Account Method - Best Practice)
-        env:
-          GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
-        run: |
-          # 1. Tạo file Service Account từ Secret
-          echo "$GDRIVE_CREDENTIALS_DATA" > service-account.json
-
-          # 2. KÍCH HOẠT chế độ Service Account
-          dvc remote modify --local myremote gdrive_use_service_account true
-          dvc remote modify --local myremote gdrive_service_account_json_file_path service-account.json
-      # 4. Kéo dữ liệu về (nếu cần) và Chạy Pipeline
-      - name: Run DVC Pipeline
+      - name: Run DVC Pipeline on Kaggle with DAGsHub
         uses: KevKibe/kaggle-script-action@v1.0.5
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           username: ${{ secrets.KAGGLE_USERNAME }}
           key: ${{ secrets.KAGGLE_KEY }}
-          title: "Run DVC Training Pipeline"
+          title: "Run Training Pipeline"
           enable_gpu: true
           enable_internet: true
-          custom_script: | 
-            echo "Đang tải dữ liệu..."
+          custom_script: |
+            # 1. Cài đặt thư viện cần thiết
+            # Cần cài thêm 'mlflow' và 'dagshub'
+            pip install dvc mlflow dagshub
+            pip install -r backend/requirements.txt
+
+            # ---------------------------------------------------------
+            # PHẦN 1: KẾT NỐI DVC (Để tải dữ liệu từ DAGsHub về)
+            # ---------------------------------------------------------
+            # Giả sử trong file .dvc/config của bạn remote tên là 'origin'
+            # (Nếu tên khác, hãy đổi chữ 'origin' bên dưới thành tên remote của bạn)
+            
+            # Cấu hình user/pass tạm thời cho phiên chạy này
+            dvc remote modify origin --local auth basic
+            dvc remote modify origin --local user japanesegirl2002
+            dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
+
+            # ---------------------------------------------------------
+            # PHẦN 2: KẾT NỐI MLFLOW (Để vẽ biểu đồ loss/accuracy)
+            # ---------------------------------------------------------
+            # Thiết lập biến môi trường để code Python tự nhận diện server
+            export MLFLOW_TRACKING_URI="https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
+            export MLFLOW_TRACKING_USERNAME="japanesegirl2002"
+            export MLFLOW_TRACKING_PASSWORD="${{ secrets.DAGSHUB_TOKEN }}"
+
+            # ---------------------------------------------------------
+            # PHẦN 3: CHẠY PIPELINE
+            # ---------------------------------------------------------
+            echo 'Dang tai du lieu tu DAGsHub...'
             dvc pull
             
-            # 4. Chạy Training (DVC Repro sẽ tự gọi lệnh python train.py định nghĩa trong dvc.yaml)
-            echo "Bắt đầu train..."
+            echo 'Bat dau train...'
             dvc repro
         
       # 5. Báo cáo kết quả (CML Report)
