@@ -32,33 +32,33 @@ jobs:
 
       # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
       # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
-      - name: Run DVC Pipeline on Kaggle with DAGsHub
-        uses: KevKibe/kaggle-script-action@v1.0.5
-        env:
-          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
-        with:
-          username: ${{ secrets.KAGGLE_USERNAME }}
-          key: ${{ secrets.KAGGLE_KEY }}
-          title: "Run Training Pipeline"
-          enable_gpu: true
-          enable_internet: true
-          custom_script: |
+      # - name: Run DVC Pipeline on Kaggle with DAGsHub
+      #   uses: KevKibe/kaggle-script-action@v1.0.5
+      #   env:
+      #     DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+      #   with:
+      #     username: ${{ secrets.KAGGLE_USERNAME }}
+      #     key: ${{ secrets.KAGGLE_KEY }}
+      #     title: "Run Training Pipeline"
+      #     enable_gpu: true
+      #     enable_internet: true
+      #     custom_script: |
             
-            pip install dvc mlflow dagshub
+      #       pip install dvc mlflow dagshub
             
-            !dvc remote modify origin --local auth basic
-            !dvc remote modify origin --local user japanesegirl2002
-            !dvc remote modify origin --local password "DAGSHUB_TOKEN"
+      #       !dvc remote modify origin --local auth basic
+      #       !dvc remote modify origin --local user japanesegirl2002
+      #       !dvc remote modify origin --local password "DAGSHUB_TOKEN"
 
-            !export MLFLOW_TRACKING_URI="https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
-            !export MLFLOW_TRACKING_USERNAME="japanesegirl2002"
-            !export MLFLOW_TRACKING_PASSWORD="DAGSHUB_TOKEN"
+      #       !export MLFLOW_TRACKING_URI="https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
+      #       !export MLFLOW_TRACKING_USERNAME="japanesegirl2002"
+      #       !export MLFLOW_TRACKING_PASSWORD="DAGSHUB_TOKEN"
 
-            !echo 'Dang tai du lieu tu DAGsHub...'
-            !dvc pull
+      #       !echo 'Dang tai du lieu tu DAGsHub...'
+      #       !dvc pull
             
-            !echo 'Bat dau train...'
-            !dvc repro
+      #       !echo 'Bat dau train...'
+      #       !dvc repro
         
       # 5. Báo cáo kết quả (CML Report)
       - name: Write CML Report

@@ -71,6 +71,8 @@ def validate(valid_data_loader, model, criterion, device, num_classes):
 def run(train_data_loader, valid_data_loader, model, criterion, optimizer,
         lr_scheduler, device, num_epochs, num_classes, hparams): # ⭐ 1. Thêm lr_scheduler vào tham số
     
+    REGISTRY_MODEL_NAME = "DeepLabV3_Model_Registry"
+    
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
     
     mlflow.set_experiment("DeepLabV3_Experiment")
