@@ -41,6 +41,8 @@ jobs:
           enable_gpu: true
           enable_internet: true
           custom_script: |
+            %%bash
+
             # 1. Cài đặt thư viện cần thiết
             # Cần cài thêm 'mlflow' và 'dagshub'
             pip install dvc mlflow dagshub
