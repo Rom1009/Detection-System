@@ -42,22 +42,19 @@ jobs:
           enable_internet: true
           custom_script: |
             %%bash
-
-            # 1. Cài đặt thư viện cần thiết
-            # Cần cài thêm 'mlflow' và 'dagshub'
-            pip install dvc mlflow dagshub
-            pip install -r backend/requirements.txt
-
-            # ---------------------------------------------------------
-            # PHẦN 1: KẾT NỐI DVC (Để tải dữ liệu từ DAGsHub về)
-            # ---------------------------------------------------------
-            # Giả sử trong file .dvc/config của bạn remote tên là 'origin'
-            # (Nếu tên khác, hãy đổi chữ 'origin' bên dưới thành tên remote của bạn)
+            # 1. Báo hiệu chạy bằng Bash Shell (Quan trọng nhất)
+            
+            # 2. Setup code
+            rm -rf Detection-System
+            git clone --branch dev https://github.com/Rom1009/Detection-System.git
+            
+            # 3. Vào đúng thư mục gốc chứa .dvc
+            cd Detection-System
             
             # Cấu hình user/pass tạm thời cho phiên chạy này
-            dvc remote modify origin --local auth basic
-            dvc remote modify origin --local user japanesegirl2002
-            dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
+            !dvc remote modify origin --local auth basic
+            !dvc remote modify origin --local user japanesegirl2002
+            !dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
 
             # ---------------------------------------------------------
             # PHẦN 2: KẾT NỐI MLFLOW (Để vẽ biểu đồ loss/accuracy)
