@@ -42,27 +42,17 @@ jobs:
           enable_internet: true
           custom_script: |
             %%bash
-            # 1. Báo hiệu chạy bằng Bash Shell (Quan trọng nhất)
             
             pip install dvc mlflow dagshub
             
-            
-            # Cấu hình user/pass tạm thời cho phiên chạy này
             dvc remote modify origin --local auth basic
             dvc remote modify origin --local user japanesegirl2002
             dvc remote modify origin --local password "${{ secrets.DAGSHUB_TOKEN }}"
 
-            # ---------------------------------------------------------
-            # PHẦN 2: KẾT NỐI MLFLOW (Để vẽ biểu đồ loss/accuracy)
-            # ---------------------------------------------------------
-            # Thiết lập biến môi trường để code Python tự nhận diện server
             export MLFLOW_TRACKING_URI="https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
             export MLFLOW_TRACKING_USERNAME="japanesegirl2002"
             export MLFLOW_TRACKING_PASSWORD="${{ secrets.DAGSHUB_TOKEN }}"
 
-            # ---------------------------------------------------------
-            # PHẦN 3: CHẠY PIPELINE
-            # ---------------------------------------------------------
             echo 'Dang tai du lieu tu DAGsHub...'
             dvc pull
             
