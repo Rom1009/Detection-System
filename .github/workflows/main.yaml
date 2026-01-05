@@ -44,17 +44,13 @@ jobs:
             %%bash
             # 1. Báo hiệu chạy bằng Bash Shell (Quan trọng nhất)
             
-            # 2. Setup code
-            rm -rf Detection-System
-            git clone --branch dev https://github.com/Rom1009/Detection-System.git
+            pip install dvc mlflow dagshub
             
-            # 3. Vào đúng thư mục gốc chứa .dvc
-            cd Detection-System
             
             # Cấu hình user/pass tạm thời cho phiên chạy này
-            !dvc remote modify origin --local auth basic
-            !dvc remote modify origin --local user japanesegirl2002
-            !dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
+            dvc remote modify origin --local auth basic
+            dvc remote modify origin --local user japanesegirl2002
+            dvc remote modify origin --local password "${{ secrets.DAGSHUB_TOKEN }}"
 
             # ---------------------------------------------------------
             # PHẦN 2: KẾT NỐI MLFLOW (Để vẽ biểu đồ loss/accuracy)
