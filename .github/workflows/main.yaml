@@ -43,23 +43,22 @@ jobs:
           enable_gpu: true
           enable_internet: true
           custom_script: |
-            %%bash
             
-            pip install dvc mlflow dagshub
+            !pip install dvc mlflow dagshub
             
-            dvc remote modify origin --local auth basic
-            dvc remote modify origin --local user japanesegirl2002
-            dvc remote modify origin --local password "DAGSHUB_TOKEN"
+            !dvc remote modify origin --local auth basic
+            !dvc remote modify origin --local user japanesegirl2002
+            !dvc remote modify origin --local password "DAGSHUB_TOKEN"
 
-            export MLFLOW_TRACKING_URI="https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
-            export MLFLOW_TRACKING_USERNAME="japanesegirl2002"
-            export MLFLOW_TRACKING_PASSWORD="DAGSHUB_TOKEN"
+            !export MLFLOW_TRACKING_URI="https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
+            !export MLFLOW_TRACKING_USERNAME="japanesegirl2002"
+            !export MLFLOW_TRACKING_PASSWORD="DAGSHUB_TOKEN"
 
-            echo 'Dang tai du lieu tu DAGsHub...'
-            dvc pull
+            !echo 'Dang tai du lieu tu DAGsHub...'
+            !dvc pull
             
-            echo 'Bat dau train...'
-            dvc repro
+            !echo 'Bat dau train...'
+            !dvc repro
         
       # 5. Báo cáo kết quả (CML Report)
       - name: Write CML Report
