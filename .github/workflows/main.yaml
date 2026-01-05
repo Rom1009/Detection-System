@@ -61,14 +61,14 @@ jobs:
       #       !dvc repro
         
       # 5. Báo cáo kết quả (CML Report)
-      - name: Write CML Report
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "## Model Metrics" >> report.md
+      # - name: Write CML Report
+      #   env:
+      #     REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     echo "## Model Metrics" >> report.md
           
-          # Giả sử lệnh dvc metrics diff in ra bảng so sánh
-          dvc metrics diff --md >> report.md
+      #     # Giả sử lệnh dvc metrics diff in ra bảng so sánh
+      #     dvc metrics diff --md >> report.md
           
-          # Đăng comment vào bài commit/PR
-          cml comment create report.md
+      #     # Đăng comment vào bài commit/PR
+      #     cml comment create report.md
