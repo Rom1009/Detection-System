@@ -22,7 +22,7 @@ jobs:
           python-version: '3.12'
 
       - name: Setup CML
-        uses: iterative/setup-cml@v1
+        uses: iterative/setup-cml@v2
 
       # 2. Cài đặt thư viện
       - name: Install dependencies
