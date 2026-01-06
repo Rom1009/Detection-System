@@ -37,34 +37,7 @@ jobs:
           custom_script: |
             echo "=== STARTING PIPELINE ON KAGGLE (BASH MODE) ==="
             # Di chuyển vào thư mục
-            cd Detection-System
             echo "Current Directory: $(pwd)"
 
-            # 2. Cài đặt thư viện
-            echo "Step 2: Installing Dependencies..."
-            pip install dvc mlflow dagshub
-            pip install -r backend/requirements.txt
-
-            # 3. Setup Auth (Dùng biến môi trường $DAGSHUB_TOKEN)
-            echo "Step 3: Configuring Auth..."
-            dvc remote modify origin --local auth basic
-            dvc remote modify origin --local user token
-            dvc remote modify origin --local password "$DAGSHUB_TOKEN"
-
-            # 4. Pull Data
-            echo "Step 4: Pulling Data..."
-            dvc pull
-
-            # 5. Setup MLflow Environment Variables
-            echo "Step 5: Training & Tracking..."
-            export MLFLOW_TRACKING_URI="https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
-            export MLFLOW_TRACKING_USERNAME="japanesegirl2002"
-            export MLFLOW_TRACKING_PASSWORD="$DAGSHUB_TOKEN"
-
-            # 6. Run Training
-            # Lệnh này sẽ chạy quy trình định nghĩa trong dvc.yaml
-            dvc repro
-
-            echo "=== PIPELINE FINISHED SUCCESSFULLY ==="
-        
+           
       
