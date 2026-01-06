@@ -21,12 +21,6 @@ jobs:
         with:
           python-version: '3.10'
 
-      # 2. Cài đặt thư viện
-      - name: Install dependencies
-        run: |
-          pip install -r backend/requirements.txt
-          pip install dvc[gdrive] # Nhớ cài gói hỗ trợ gdrive
-
       # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
       # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
       - name: Run DVC Pipeline on Kaggle with DAGsHub
@@ -41,52 +35,53 @@ jobs:
           enable_internet: true
           language: python
           custom_script: |
+            #!/usr/bin/env python3
             import os
             import subprocess
+            import sys
 
-            # 1. Setup Token (Lấy từ biến môi trường của Action)
-            # Lưu ý: Không hardcode token vào script
+            # Lấy token
             DAGSHUB_TOKEN = os.getenv("DAGSHUB_TOKEN")
-            
-            # Hàm chạy lệnh an toàn (Thay thế cho cách cũ bị lỗi)
-            # check_call sẽ tự động dừng chương trình nếu lệnh bị lỗi
-            def run(cmd):
-                print("🚀 Executing: " + cmd)
-                subprocess.check_call(cmd, shell=True)
 
-            print("=== STARTING PIPELINE ON KAGGLE ===")
+            print("--- STARTING PIPELINE ON KAGGLE ---")
 
-            # 2. Clone Code
+            # 1. Clone Code
+            # Kiểm tra nếu chưa có code thì mới clone
             if not os.path.exists("Detection-System"):
-                 run("git clone --branch dev https://github.com/Rom1009/Detection-System.git")
+                print("Step 1: Cloning Repository...")
+                subprocess.check_call("git clone --branch dev https://github.com/Rom1009/Detection-System.git", shell=True)
             
-            os.chdir("Detection-System")
-            print("📂 Current Working Directory: " + os.getcwd())
-            
-            # 3. Cài đặt thư viện
-            print("📦 Installing Dependencies...")
-            run("pip install dvc mlflow dagshub")
-            run("pip install -r backend/requirements.txt")
+            # Di chuyển vào thư mục
+            if os.path.exists("Detection-System"):
+                os.chdir("Detection-System")
+                print("Moved to Detection-System folder")
 
-            # 4. Setup Auth DAGsHub
-            print("🔐 Configuring Auth...")
-            run("dvc remote modify origin --local auth basic")
-            run("dvc remote modify origin --local user token")
-            # Dùng concatenation (+) thay vì f-string để tránh lỗi YAML parse
-            run("dvc remote modify origin --local password " + DAGSHUB_TOKEN)
+            # 2. Cài đặt thư viện
+            print("Step 2: Installing Dependencies...")
+            subprocess.check_call("pip install dvc mlflow dagshub", shell=True)
+            subprocess.check_call("pip install -r backend/requirements.txt", shell=True)
 
-            # 5. Pull Data
-            print("⬇️ Pulling Data from DAGsHub...")
-            run("dvc pull")
+            # 3. Setup Auth
+            print("Step 3: Configuring Auth...")
+            subprocess.check_call("dvc remote modify origin --local auth basic", shell=True)
+            subprocess.check_call("dvc remote modify origin --local user token", shell=True)
+            # Dùng concatenation (+) an toàn hơn f-string trong YAML
+            subprocess.check_call("dvc remote modify origin --local password " + DAGSHUB_TOKEN, shell=True)
 
-            # 6. Training & Tracking
-            print("🔥 Starting Training...")
+            # 4. Pull Data
+            print("Step 4: Pulling Data...")
+            subprocess.check_call("dvc pull", shell=True)
+
+            # 5. Training
+            print("Step 5: Training & Tracking...")
+            # Setup biến môi trường cho MLflow
             os.environ["MLFLOW_TRACKING_URI"] = "https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
             os.environ["MLFLOW_TRACKING_USERNAME"] = "japanesegirl2002"
             os.environ["MLFLOW_TRACKING_PASSWORD"] = DAGSHUB_TOKEN
             
-            run("dvc repro")
+            # Chạy lệnh train
+            subprocess.check_call("dvc repro", shell=True)
             
-            print("✅ PIPELINE FINISHED SUCCESSFULLY!")
+            print("--- PIPELINE FINISHED ---")
         
       
