@@ -32,7 +32,7 @@ run("pip install -r backend/requirements.txt")
 # 2. Cấu hình DAGsHub Auth
 print("🔐 Configuring Auth...")
 run("dvc remote modify origin --local auth basic")
-run("dvc remote modify origin --local user token")
+run("dvc remote modify origin --local user japanesegirl2002")
 # Truyền biến DAGSHUB_TOKEN đã lấy ở trên vào lệnh
 run(f"dvc remote modify origin --local password {DAGSHUB_TOKEN}")
 
