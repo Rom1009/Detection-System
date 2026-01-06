@@ -19,10 +19,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
-
-      - name: Setup CML
-        uses: iterative/setup-cml@v2
+          python-version: '3.10'
 
       # 2. Cài đặt thư viện
       - name: Install dependencies
@@ -82,15 +79,4 @@ jobs:
             
             run_command("dvc repro")
         
-      # 5. Báo cáo kết quả (CML Report)
-      - name: Write CML Report
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "## Model Metrics" >> report.md
-          
-          # Giả sử lệnh dvc metrics diff in ra bảng so sánh
-          dvc metrics diff --md >> report.md
-          
-          # Đăng comment vào bài commit/PR
-          cml comment create report.md
+      
