@@ -25,50 +25,72 @@ jobs:
         uses: iterative/setup-cml@v1
 
       # 2. Cài đặt thư viện
-      # - name: Install dependencies
-      #   run: |
-      #     pip install -r backend/requirements.txt
-      #     pip install dvc[gdrive] # Nhớ cài gói hỗ trợ gdrive
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          pip install dvc[gdrive] # Nhớ cài gói hỗ trợ gdrive
 
       # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
       # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
-      # - name: Run DVC Pipeline on Kaggle with DAGsHub
-      #   uses: KevKibe/kaggle-script-action@v1.0.5
-      #   env:
-      #     DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
-      #   with:
-      #     username: ${{ secrets.KAGGLE_USERNAME }}
-      #     key: ${{ secrets.KAGGLE_KEY }}
-      #     title: "Run Training Pipeline"
-      #     enable_gpu: true
-      #     enable_internet: true
-      #     custom_script: |
-            
-      #       pip install dvc mlflow dagshub
-            
-      #       !dvc remote modify origin --local auth basic
-      #       !dvc remote modify origin --local user japanesegirl2002
-      #       !dvc remote modify origin --local password "DAGSHUB_TOKEN"
+      - name: Run DVC Pipeline on Kaggle with DAGsHub
+        uses: KevKibe/kaggle-script-action@v1.0.5
+        env:
+          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+        with:
+          username: ${{ secrets.KAGGLE_USERNAME }}
+          key: ${{ secrets.KAGGLE_KEY }}
+          title: "Run Training Pipeline"
+          enable_gpu: true
+          enable_internet: true
+          custom_script: |
+            import os
+            import subprocess
 
-      #       !export MLFLOW_TRACKING_URI="https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
-      #       !export MLFLOW_TRACKING_USERNAME="japanesegirl2002"
-      #       !export MLFLOW_TRACKING_PASSWORD="DAGSHUB_TOKEN"
-
-      #       !echo 'Dang tai du lieu tu DAGsHub...'
-      #       !dvc pull
+            DAGSHUB_TOKEN = "${{ secrets.DAGSHUB_TOKEN }}"
             
-      #       !echo 'Bat dau train...'
-      #       !dvc repro
+            def run_command(command):
+                print(f"Executing: {command}")
+                if os.system(command) != 0:
+                    raise Exception(f"Failed: {command}")
+
+            # 1. Setup Environment
+            # Clone code (nếu cần) hoặc giả định action đã checkout
+            if not os.path.exists("Detection-System"):
+                 run_command("git clone --branch dev https://github.com/Rom1009/Detection-System.git")
+            
+            os.chdir("Detection-System")
+            
+            # Cài thư viện (Bỏ dvc-gdrive)
+            run_command("pip install dvc mlflow dagshub")
+
+            # 2. Setup Auth (Chỉ cần Token là đủ cho cả Data và MLflow)
+            print("Configuring Auth...")
+            run_command("dvc remote modify origin --local auth basic")
+            run_command("dvc remote modify origin --local user japanesegirl2002")
+            run_command(f"dvc remote modify origin --local password {DAGSHUB_TOKEN}")
+
+            # 3. Pull Data
+            # Vì file .dvc/config trên Github đã trỏ về DAGsHub, lệnh này sẽ tự chạy mượt mà
+            print("Pulling Data from DAGsHub...")
+            run_command("dvc pull")
+
+            # 4. Training & Tracking
+            print("Starting Training...")
+            os.environ["MLFLOW_TRACKING_URI"] = "https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
+            os.environ["MLFLOW_TRACKING_USERNAME"] = "japanesegirl2002"
+            os.environ["MLFLOW_TRACKING_PASSWORD"] = DAGSHUB_TOKEN
+            
+            run_command("dvc repro")
         
       # 5. Báo cáo kết quả (CML Report)
-      # - name: Write CML Report
-      #   env:
-      #     REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     echo "## Model Metrics" >> report.md
+      - name: Write CML Report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## Model Metrics" >> report.md
           
-      #     # Giả sử lệnh dvc metrics diff in ra bảng so sánh
-      #     dvc metrics diff --md >> report.md
+          # Giả sử lệnh dvc metrics diff in ra bảng so sánh
+          dvc metrics diff --md >> report.md
           
-      #     # Đăng comment vào bài commit/PR
-      #     cml comment create report.md
+          # Đăng comment vào bài commit/PR
+          cml comment create report.md
