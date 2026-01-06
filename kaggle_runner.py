@@ -36,12 +36,11 @@ try:
     # A. Cài đặt thư viện
     print("📦 Installing dependencies...")
     run("pip install dvc mlflow dagshub")
-    run("pip install -r backend/requirements.txt")
 
     # B. Cấu hình DAGsHub Auth
     print("🔐 Configuring Auth...")
     run("dvc remote modify origin --local auth basic")
-    run("dvc remote modify origin --local user token") 
+    run("dvc remote modify origin --local user japanesegirl2002") 
     # Lưu ý: Dùng user là 'token' thay vì tên đăng nhập để tránh lỗi với token
     run(f"dvc remote modify origin --local password {DAGSHUB_TOKEN}")
 
