@@ -1,6 +1,8 @@
 import os
 import subprocess
 import sys
+import time 
+
 
 # --- 1. SETUP HÀM RUN & TOKEN ---
 def run(cmd):
@@ -56,36 +58,36 @@ try:
     # Chạy quy trình train (Ép chạy lại với -f)
     run("dvc repro")
 
+
+# ... (Phần đầu giữ nguyên) ...
+
 except Exception as e:
-    print(f"\n❌ PIPELINE FAILED WITH ERROR: {e}")
-    # Không exit ngay, để nó chạy xuống finally dọn dẹp đã
-    # Biến này để đánh dấu là có lỗi
+    print(f"\n❌ PIPELINE FAILED: {e}")
     os.environ["PIPELINE_STATUS"] = "FAILED"
 
 finally:
-    # --- 3. DỌN DẸP (LUÔN CHẠY DÙ SỐNG HAY CHẾT) ---
-    print("\n🧹 AGGRESSIVE CLEANUP (To fix GitHub Action hanging)...")
+    print("\n🧹 FINAL CLEANUP...")
     
     try:
-        # Quay về thư mục gốc của Kaggle
-        os.chdir("/kaggle/working")
-        
-        # Xóa thư mục code
-        if os.path.exists("Detection-System"):
-            subprocess.call("rm -rf Detection-System", shell=True)
+        # 1. Xóa sạch dữ liệu (như cũ)
+        if os.path.exists("/kaggle/working"):
+            os.chdir("/kaggle/working")
+            subprocess.call("rm -rf ./*", shell=True)
+            subprocess.call("rm -rf ./.??*", shell=True) # Xóa file ẩn (.dvc, .git, .cache)
             
-        # QUAN TRỌNG: Xóa sạch các file ẩn (.dvc, .cache, .git)
-        # Đây là thủ phạm chính khiến Kaggle đóng gói lâu
-        subprocess.call("rm -rf .cache", shell=True)
-        subprocess.call("rm -rf .dvc", shell=True)
-        subprocess.call("rm -rf .git", shell=True)
-        subprocess.call("rm -rf ./*", shell=True) # Xóa nốt những gì còn sót lại
-
-        print("✅ STORAGE CLEARED. KAGGLE SHOULD STOP NOW.")
+        # 2. CÂU THẦN CHÚ 1: Ép hệ điều hành ghi nhận việc xóa ngay lập tức
+        # Giúp Kaggle nhận ra folder đã rỗng nhanh hơn
+        subprocess.call("sync", shell=True)
         
+        print("✅ CLEANUP DONE. EXITING NOW.")
+
     except Exception as cleanup_error:
         print(f"⚠️ Cleanup warning: {cleanup_error}")
 
-    # Nếu nãy có lỗi thì giờ mới báo exit để GitHub hiện đỏ
+    # 3. CÂU THẦN CHÚ 2: Kiểm tra trạng thái và thoát dứt khoát
     if os.environ.get("PIPELINE_STATUS") == "FAILED":
-        sys.exit(1)
+        print("❌ Exiting with failure code.")
+        sys.exit(1) # Báo đỏ
+    else:
+        print("✅ Exiting with success code.")
+        sys.exit(0) # Báo xanh (Bắt buộc phải có dòng này để Python thoát sạch sẽ)
