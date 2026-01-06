@@ -33,55 +33,49 @@ jobs:
           title: "Run Training Pipeline"
           enable_gpu: true
           enable_internet: true
-          language: python
+          # ĐÃ XÓA DÒNG 'language: python' VÌ ACTION KHÔNG HỖ TRỢ
           custom_script: |
-            #!/usr/bin/env python3
-            import os
-            import subprocess
-            import sys
-
-            # Lấy token
-            DAGSHUB_TOKEN = os.getenv("DAGSHUB_TOKEN")
-
-            print("--- STARTING PIPELINE ON KAGGLE ---")
+            # Dừng ngay lập tức nếu có bất kỳ lệnh nào bị lỗi (Tương tự check_call)
+            set -e
+            
+            echo "=== STARTING PIPELINE ON KAGGLE (BASH MODE) ==="
 
             # 1. Clone Code
-            # Kiểm tra nếu chưa có code thì mới clone
-            if not os.path.exists("Detection-System"):
-                print("Step 1: Cloning Repository...")
-                subprocess.check_call("git clone --branch dev https://github.com/Rom1009/Detection-System.git", shell=True)
-            
+            # Kiểm tra folder chưa tồn tại thì clone
+            if [ ! -d "Detection-System" ]; then
+                echo "Step 1: Cloning Repository..."
+                git clone --branch dev https://github.com/Rom1009/Detection-System.git
+            fi
+
             # Di chuyển vào thư mục
-            if os.path.exists("Detection-System"):
-                os.chdir("Detection-System")
-                print("Moved to Detection-System folder")
+            cd Detection-System
+            echo "Current Directory: $(pwd)"
 
             # 2. Cài đặt thư viện
-            print("Step 2: Installing Dependencies...")
-            subprocess.check_call("pip install dvc mlflow dagshub", shell=True)
-            subprocess.check_call("pip install -r backend/requirements.txt", shell=True)
+            echo "Step 2: Installing Dependencies..."
+            pip install dvc mlflow dagshub
+            pip install -r backend/requirements.txt
 
-            # 3. Setup Auth
-            print("Step 3: Configuring Auth...")
-            subprocess.check_call("dvc remote modify origin --local auth basic", shell=True)
-            subprocess.check_call("dvc remote modify origin --local user token", shell=True)
-            # Dùng concatenation (+) an toàn hơn f-string trong YAML
-            subprocess.check_call("dvc remote modify origin --local password " + DAGSHUB_TOKEN, shell=True)
+            # 3. Setup Auth (Dùng biến môi trường $DAGSHUB_TOKEN)
+            echo "Step 3: Configuring Auth..."
+            dvc remote modify origin --local auth basic
+            dvc remote modify origin --local user token
+            dvc remote modify origin --local password "$DAGSHUB_TOKEN"
 
             # 4. Pull Data
-            print("Step 4: Pulling Data...")
-            subprocess.check_call("dvc pull", shell=True)
+            echo "Step 4: Pulling Data..."
+            dvc pull
 
-            # 5. Training
-            print("Step 5: Training & Tracking...")
-            # Setup biến môi trường cho MLflow
-            os.environ["MLFLOW_TRACKING_URI"] = "https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
-            os.environ["MLFLOW_TRACKING_USERNAME"] = "japanesegirl2002"
-            os.environ["MLFLOW_TRACKING_PASSWORD"] = DAGSHUB_TOKEN
-            
-            # Chạy lệnh train
-            subprocess.check_call("dvc repro", shell=True)
-            
-            print("--- PIPELINE FINISHED ---")
+            # 5. Setup MLflow Environment Variables
+            echo "Step 5: Training & Tracking..."
+            export MLFLOW_TRACKING_URI="https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
+            export MLFLOW_TRACKING_USERNAME="japanesegirl2002"
+            export MLFLOW_TRACKING_PASSWORD="$DAGSHUB_TOKEN"
+
+            # 6. Run Training
+            # Lệnh này sẽ chạy quy trình định nghĩa trong dvc.yaml
+            dvc repro
+
+            echo "=== PIPELINE FINISHED SUCCESSFULLY ==="
         
       
