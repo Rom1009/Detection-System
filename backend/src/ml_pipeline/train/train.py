@@ -121,7 +121,15 @@ def run(train_data_loader, valid_data_loader, model, criterion, optimizer,
         
         dummy_input, _ = next(iter(valid_data_loader))
         dummy_input = dummy_input.to(device)
-        signature = infer_signature(dummy_input.cpu().numpy(), model(dummy_input).detach().cpu().numpy())
+
+        with torch.no_grad():
+            raw_output = model(dummy_input) # Đây là Dictionary
+            prediction_tensor = raw_output['out']
+
+        signature = infer_signature(
+            dummy_input.cpu().numpy(), 
+            prediction_tensor.cpu().numpy()
+        )
         
         
         model_info = mlflow.pytorch.log_model(
