@@ -49,4 +49,10 @@ os.environ["MLFLOW_TRACKING_PASSWORD"] = DAGSHUB_TOKEN
 # Chạy quy trình train
 run("dvc repro -f")
 
-print("✅ DONE!")
+print("🧹 Cleaning up to speed up GitHub Action...")
+
+# Xóa thư mục code (chứa cả data ảnh nặng)
+# Nếu không xóa, GitHub Action sẽ cố tải cả ngàn tấm ảnh này về -> Treo máy
+run("rm -rf Detection-System")
+
+print("✅ DONE! Ready to finish.")
