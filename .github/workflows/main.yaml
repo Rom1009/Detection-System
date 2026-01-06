@@ -35,18 +35,7 @@ jobs:
           enable_internet: true
           # ĐÃ XÓA DÒNG 'language: python' VÌ ACTION KHÔNG HỖ TRỢ
           custom_script: |
-            # Dừng ngay lập tức nếu có bất kỳ lệnh nào bị lỗi (Tương tự check_call)
-            set -e
-            
             echo "=== STARTING PIPELINE ON KAGGLE (BASH MODE) ==="
-
-            # 1. Clone Code
-            # Kiểm tra folder chưa tồn tại thì clone
-            if [ ! -d "Detection-System" ]; then
-                echo "Step 1: Cloning Repository..."
-                git clone --branch dev https://github.com/Rom1009/Detection-System.git
-            fi
-
             # Di chuyển vào thư mục
             cd Detection-System
             echo "Current Directory: $(pwd)"
