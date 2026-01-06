@@ -22,7 +22,7 @@ jobs:
           python-version: '3.10'
 
       # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
-      GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
+      # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
       - name: Run DVC Pipeline on Kaggle with DAGsHub
         uses: KevKibe/kaggle-script-action@v1.0.5
         env:
