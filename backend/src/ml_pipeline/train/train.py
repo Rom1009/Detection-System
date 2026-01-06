@@ -73,8 +73,6 @@ def run(train_data_loader, valid_data_loader, model, criterion, optimizer,
     
     REGISTRY_MODEL_NAME = "DeepLabV3_Model_Registry"
     
-    mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
-    
     mlflow.set_experiment("DeepLabV3_Experiment")
     
     with mlflow.start_run(run_name=hparams.get("run_name", "default_run")):

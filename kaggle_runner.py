@@ -47,6 +47,6 @@ os.environ["MLFLOW_TRACKING_USERNAME"] = "japanesegirl2002"
 os.environ["MLFLOW_TRACKING_PASSWORD"] = DAGSHUB_TOKEN
 
 # Chạy quy trình train
-run("dvc repro")
+run("dvc repro -f")
 
 print("✅ DONE!")
