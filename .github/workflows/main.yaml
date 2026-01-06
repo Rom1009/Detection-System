@@ -39,44 +39,54 @@ jobs:
           title: "Run Training Pipeline"
           enable_gpu: true
           enable_internet: true
+          language: python
           custom_script: |
             import os
             import subprocess
 
-            DAGSHUB_TOKEN = "${{ secrets.DAGSHUB_TOKEN }}"
+            # 1. Setup Token (Lấy từ biến môi trường của Action)
+            # Lưu ý: Không hardcode token vào script
+            DAGSHUB_TOKEN = os.getenv("DAGSHUB_TOKEN")
             
-            def run_command(command):
-                print(f"Executing: {command}")
-                if os.system(command) != 0:
-                    raise Exception(f"Failed: {command}")
+            # Hàm chạy lệnh an toàn (Thay thế cho cách cũ bị lỗi)
+            # check_call sẽ tự động dừng chương trình nếu lệnh bị lỗi
+            def run(cmd):
+                print("🚀 Executing: " + cmd)
+                subprocess.check_call(cmd, shell=True)
 
-            # 1. Setup Environment
-            # Clone code (nếu cần) hoặc giả định action đã checkout
+            print("=== STARTING PIPELINE ON KAGGLE ===")
+
+            # 2. Clone Code
             if not os.path.exists("Detection-System"):
-                 run_command("git clone --branch dev https://github.com/Rom1009/Detection-System.git")
+                 run("git clone --branch dev https://github.com/Rom1009/Detection-System.git")
             
             os.chdir("Detection-System")
+            print("📂 Current Working Directory: " + os.getcwd())
             
-            # Cài thư viện (Bỏ dvc-gdrive)
-            run_command("pip install dvc mlflow dagshub")
+            # 3. Cài đặt thư viện
+            print("📦 Installing Dependencies...")
+            run("pip install dvc mlflow dagshub")
+            run("pip install -r backend/requirements.txt")
 
-            # 2. Setup Auth (Chỉ cần Token là đủ cho cả Data và MLflow)
-            print("Configuring Auth...")
-            run_command("dvc remote modify origin --local auth basic")
-            run_command("dvc remote modify origin --local user japanesegirl2002")
-            run_command(f"dvc remote modify origin --local password {DAGSHUB_TOKEN}")
+            # 4. Setup Auth DAGsHub
+            print("🔐 Configuring Auth...")
+            run("dvc remote modify origin --local auth basic")
+            run("dvc remote modify origin --local user token")
+            # Dùng concatenation (+) thay vì f-string để tránh lỗi YAML parse
+            run("dvc remote modify origin --local password " + DAGSHUB_TOKEN)
 
-            # 3. Pull Data
-            # Vì file .dvc/config trên Github đã trỏ về DAGsHub, lệnh này sẽ tự chạy mượt mà
-            print("Pulling Data from DAGsHub...")
-            run_command("dvc pull")
+            # 5. Pull Data
+            print("⬇️ Pulling Data from DAGsHub...")
+            run("dvc pull")
 
-            # 4. Training & Tracking
-            print("Starting Training...")
+            # 6. Training & Tracking
+            print("🔥 Starting Training...")
             os.environ["MLFLOW_TRACKING_URI"] = "https://dagshub.com/japanesegirl2002/Detection-System.mlflow"
             os.environ["MLFLOW_TRACKING_USERNAME"] = "japanesegirl2002"
             os.environ["MLFLOW_TRACKING_PASSWORD"] = DAGSHUB_TOKEN
             
-            run_command("dvc repro")
+            run("dvc repro")
+            
+            print("✅ PIPELINE FINISHED SUCCESSFULLY!")
         
       
