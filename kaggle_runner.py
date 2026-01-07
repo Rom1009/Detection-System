@@ -28,14 +28,23 @@ try:
 except Exception as e:
     print(f"❌ Error: {e}")
     sys.exit(1)
+# --------------------------------
 
-# --- 2. BẮT ĐẦU PIPELINE (CÓ BẢO HỘ TRY...FINALLY) ---
-try:
-    print("=== KAGGLE PIPELINE STARTED ===")
+def run(cmd):
+    print(f"🚀 Running: {cmd}")
+    if subprocess.call(cmd, shell=True) != 0:
+        print(f"❌ Error: {cmd}")
+        sys.exit(1)
 
-    # A. Cài đặt thư viện
-    print("📦 Installing dependencies...")
-    run("pip install dvc mlflow dagshub")
+print("=== KAGGLE PIPELINE STARTED ===")
+
+run("git clone --branch dev https://github.com/Rom1009/Detection-System.git")
+
+os.chdir("Detection-System")
+
+# 1. Cài đặt thư viện
+print("📦 Installing dependencies...")
+run("pip install dvc mlflow dagshub")
 
     # B. Cấu hình DAGsHub Auth
     print("🔐 Configuring Auth...")

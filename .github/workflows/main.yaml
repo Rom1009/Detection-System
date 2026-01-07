@@ -21,23 +21,48 @@ jobs:
         with:
           python-version: '3.10'
 
-      # 3. TẠO FILE CREDENTIAL TỪ SECRET (Bước quan trọng nhất)
-      # GitHub Runner sẽ lấy nội dung từ Secret và tạo lại file json
-      - name: Run DVC Pipeline on Kaggle with DAGsHub
-        uses: KevKibe/kaggle-script-action@v1.0.5
+      - name: Setup Kaggle Config
+        run: |
+          pip install kaggle jq
+          mkdir -p ~/.kaggle
+          echo '{"username":"${{ secrets.KAGGLE_USERNAME }}","key":"${{ secrets.KAGGLE_KEY }}"}' > ~/.kaggle/kaggle.json
+          chmod 600 ~/.kaggle/kaggle.json
+
+      # 2. PUSH CODE VÀ TỰ QUẢN LÝ VIỆC CHỜ ĐỢI (POLLING)
+      - name: Push Kernel and Poll for Status
+        id: kaggle_process
         env:
-          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
-        with:
-          username: ${{ secrets.KAGGLE_USERNAME }}
-          key: ${{ secrets.KAGGLE_KEY }}
-          title: "Run Training Pipeline"
-          enable_gpu: true
-          enable_internet: true
-          language: python
-          # LƯU Ý QUAN TRỌNG:
-          # 1. !cd Detection-System: Để chui vào thư mục code vừa clone
-          # 2. &&: Để chạy tiếp lệnh sau
-          # 3. python kaggle_runner.py ...: Gọi file python và TRUYỀN TOKEN VÀO SAU
-          custom_script: "python kaggle_runner.py ${{ secrets.DAGSHUB_TOKEN }}"
+          # Thay bằng user/slug của bạn (Ví dụ: rom1009/detection-system)
+          KERNEL_SLUG: ${{ secrets.KAGGLE_USERNAME }}/detection-system
+        run: |
+          echo "🚀 Đẩy code lên Kaggle..."
+          kaggle kernels push -p . # Assumes kernel-metadata.json is in root
+
+          echo "⏳ Đang đợi Kaggle training..."
+          status="running"
+          
+          # Vòng lặp kiểm tra trạng thái (Timeout sau 2 tiếng nếu cần thêm logic đếm)
+          while [[ "$status" != "complete" && "$status" != "error" ]]; do
+            sleep 60 # Đợi 1 phút rồi hỏi lại
+            
+            # Lấy trạng thái hiện tại (dùng jq để parse hoặc grep)
+            # Lệnh status trả về dạng: "ref, status, lastRunTime..."
+            full_status=$(kaggle kernels status $KERNEL_SLUG)
+            status=$(echo $full_status | grep -oP '(?<=status: )\w+')
+            
+            echo "Current Status: $status"
+            
+            # Nếu status bị rỗng (do lỗi mạng), gán lại running để không crash script
+            if [[ -z "$status" ]]; then status="running"; fi
+          done
+
+          if [[ "$status" == "error" ]]; then
+            echo "❌ Training bị lỗi trên Kaggle!"
+            kaggle kernels output $KERNEL_SLUG -p ./logs
+            cat ./logs/*.log # In log ra để debug
+            exit 1
+          else
+            echo "✅ Training hoàn tất thành công!"
+          fi
         
       
