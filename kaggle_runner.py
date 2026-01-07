@@ -41,7 +41,7 @@ try:
     print("🔐 Configuring Auth...")
     # Dùng Token đã được tiêm vào
     run("dvc remote modify origin --local auth basic")
-    run("dvc remote modify origin --local user token")
+    run("dvc remote modify origin --local user japanesegirl2002")
     run(f"dvc remote modify origin --local password {DAGSHUB_TOKEN}")
 
     print("⬇️ Pulling Data...")
