@@ -46,21 +46,26 @@ jobs:
           while [[ "$status" != "complete" && "$status" != "error" ]]; do
             sleep 60
             
-            # 2. Lấy toàn bộ output ra để debug xem Kaggle trả về cái gì
             full_status=$(kaggle kernels status $KERNEL_SLUG)
-            echo "🔍 Raw output from Kaggle: $full_status"
+            echo "🔍 Raw: $full_status"
             
-            # 3. Lọc status an toàn hơn
-            # Dùng "|| echo running" để nếu grep lỗi thì nó vẫn trả về chữ "running" chứ không crash script
-            # Sửa regex một chút: Kaggle thường trả về: has status "running" (có dấu ngoặc kép)
-            status=$(echo "$full_status" | grep -oP '(?<=status ")\w+' || echo "running")
+            # --- LOGIC XỬ LÝ MỚI (ROBUST) ---
             
-            # Fix trường hợp regex cũ không bắt được dấu ngoặc kép
-            if [[ "$status" == "running" && "$full_status" == *"complete"* ]]; then
+            # 1. Kiểm tra xem có chữ "COMPLETE" hoặc "complete" trong chuỗi không
+            # (Cách này an toàn hơn dùng regex trích xuất)
+            if [[ "$full_status" == *"COMPLETE"* ]] || [[ "$full_status" == *"complete"* ]]; then
               status="complete"
+            
+            # 2. Kiểm tra lỗi
+            elif [[ "$full_status" == *"ERROR"* ]] || [[ "$full_status" == *"error"* ]]; then
+              status="error"
+              
+            # 3. Nếu không phải 2 cái trên thì coi như đang running
+            else
+              status="running"
             fi
             
-            echo "Current Status: $status"
+            echo "Current Status Parsed: $status"
           done
 
           # 4. BẬT LẠI CHẾ ĐỘ BẮT LỖI
