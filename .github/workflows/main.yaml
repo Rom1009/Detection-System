@@ -32,7 +32,7 @@ jobs:
       - name: Push Kernel and Poll for Status
         id: kaggle_process
         env:
-          KERNEL_SLUG: ${{ secrets.KAGGLE_USERNAME }}/detection-system
+          KERNEL_SLUG: ${{ secrets.KAGGLE_USERNAME }}/detection-system-training
           DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }} # Lấy token vào biến môi trường tạm
         run: |
           # ... (Phần trên giữ nguyên) ...
