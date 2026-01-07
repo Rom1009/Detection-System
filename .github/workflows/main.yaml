@@ -35,28 +35,36 @@ jobs:
           KERNEL_SLUG: ${{ secrets.KAGGLE_USERNAME }}/detection-system
           DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }} # Lấy token vào biến môi trường tạm
         run: |
-          echo "💉 Đang tiêm Token vào code..."
-          # Dùng sed để thay thế Placeholder bằng Token thật
-          # Lưu ý: Dùng dấu | làm phân cách để tránh lỗi nếu Token có chứa ký tự /
-          sed -i "s|DAGSHUB_TOKEN_PLACEHOLDER|${DAGSHUB_TOKEN}|g" kaggle_runner.py
-
-          echo "🚀 Đẩy code lên Kaggle..."
-          kaggle kernels push -p .
-
-          # QUAN TRỌNG: Revert (hoàn tác) lại file ngay để tránh lộ token nếu lỡ có ai cat file ra log
-          # (Tuy nhiên runner sẽ bị hủy sau khi chạy xong nên bước này là cẩn thận thêm thôi)
-          git checkout kaggle_runner.py 
-
+          # ... (Phần trên giữ nguyên) ...
           echo "⏳ Đang đợi Kaggle training..."
+          
+          # 1. TẮT CHẾ ĐỘ "HỄ LỖI LÀ CHẾT" (QUAN TRỌNG NHẤT)
+          set +e 
+          
           status="running"
           
           while [[ "$status" != "complete" && "$status" != "error" ]]; do
             sleep 60
+            
+            # 2. Lấy toàn bộ output ra để debug xem Kaggle trả về cái gì
             full_status=$(kaggle kernels status $KERNEL_SLUG)
-            status=$(echo $full_status | grep -oP '(?<=status: )\w+')
+            echo "🔍 Raw output from Kaggle: $full_status"
+            
+            # 3. Lọc status an toàn hơn
+            # Dùng "|| echo running" để nếu grep lỗi thì nó vẫn trả về chữ "running" chứ không crash script
+            # Sửa regex một chút: Kaggle thường trả về: has status "running" (có dấu ngoặc kép)
+            status=$(echo "$full_status" | grep -oP '(?<=status ")\w+' || echo "running")
+            
+            # Fix trường hợp regex cũ không bắt được dấu ngoặc kép
+            if [[ "$status" == "running" && "$full_status" == *"complete"* ]]; then
+              status="complete"
+            fi
+            
             echo "Current Status: $status"
-            if [[ -z "$status" ]]; then status="running"; fi
           done
+
+          # 4. BẬT LẠI CHẾ ĐỘ BẮT LỖI
+          set -e
 
           if [[ "$status" == "error" ]]; then
             echo "❌ Training bị lỗi!"
@@ -67,4 +75,3 @@ jobs:
             echo "✅ Training hoàn tất!"
           fi
         
-      
