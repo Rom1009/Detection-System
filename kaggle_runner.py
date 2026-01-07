@@ -12,8 +12,7 @@ DAGSHUB_TOKEN = "DAGSHUB_TOKEN_PLACEHOLDER"
 # thì fallback về biến môi trường để debug
 if DAGSHUB_TOKEN == "DAGSHUB_TOKEN_PLACEHOLDER":
     print("⚠️ Đang chạy Local hoặc chưa Inject Token. Thử lấy từ Env...")
-    print(os.getenv("DAGSHUB_TOKEN"))
-    DAGSHUB_TOKEN = os.getenv("DAGSHUB_TOKEN")
+    DAGSHUB_TOKEN = "DAGSHUB_TOKEN_PLACEHOLDER"
 
 if not DAGSHUB_TOKEN:
     print("❌ Lỗi: Không tìm thấy DAGSHUB_TOKEN!")
