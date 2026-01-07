@@ -33,12 +33,12 @@ jobs:
         id: kaggle_process
         env:
           KERNEL_SLUG: ${{ secrets.KAGGLE_USERNAME }}/detection-system
-          DAGSHUB_TOKEN_SECRET: ${{ secrets.DAGSHUB_TOKEN }} # Lấy token vào biến môi trường tạm
+          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }} # Lấy token vào biến môi trường tạm
         run: |
           echo "💉 Đang tiêm Token vào code..."
           # Dùng sed để thay thế Placeholder bằng Token thật
           # Lưu ý: Dùng dấu | làm phân cách để tránh lỗi nếu Token có chứa ký tự /
-          sed -i "s|DAGSHUB_TOKEN_PLACEHOLDER|${DAGSHUB_TOKEN_SECRET}|g" kaggle_runner.py
+          sed -i "s|DAGSHUB_TOKEN_PLACEHOLDER|${DAGSHUB_TOKEN}|g" kaggle_runner.py
 
           echo "🚀 Đẩy code lên Kaggle..."
           kaggle kernels push -p .
