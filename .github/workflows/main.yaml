@@ -33,26 +33,31 @@ jobs:
         id: kaggle_process
         env:
           KERNEL_SLUG: ${{ secrets.KAGGLE_USERNAME }}/detection-system-training
-          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }} # Lấy token vào biến môi trường tạm
+          # Đặt tên biến môi trường khớp với lệnh sed bên dưới
+          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }} 
         run: |
-          # ... (Phần trên giữ nguyên) ...
-          echo "⏳ Đang đợi Kaggle training..."
-          
-          # 1. TẮT CHẾ ĐỘ "HỄ LỖI LÀ CHẾT" (QUAN TRỌNG NHẤT)
+          echo "💉 Đang tiêm Token vào code (Bước này đang thiếu nè)..."
+          # 1. TIÊM TOKEN (QUAN TRỌNG NHẤT - KHÔNG ĐƯỢC BỎ QUA)
+          # Tìm chữ PLACEHOLDER thay bằng Token thật
+          sed -i "s|DAGSHUB_TOKEN_PLACEHOLDER|${DAGSHUB_TOKEN}|g" kaggle_runner.py
+
+          # Kiểm tra nhẹ xem file đã đổi chưa (che bớt token để bảo mật log)
+          echo "Kiểm tra file sau khi inject (chỉ in 5 dòng đầu):"
+          head -n 5 kaggle_runner.py
+
           echo "🚀 Đẩy code lên Kaggle..."
           kaggle kernels push -p .
 
-          # --- FIX QUAN TRỌNG Ở ĐÂY ---
+          # 2. NGỦ ĐỂ TRÁNH LỖI NHẬN DIỆN SAI TRẠNG THÁI
           echo "💤 Ngủ 60s để Kaggle kịp reset trạng thái..."
           sleep 60 
-          # ----------------------------
 
-          # Revert lại file code (dọn dẹp)
+          # 3. DỌN DẸP FILE (Hoàn tác việc sửa token để git sạch sẽ)
           git checkout kaggle_runner.py 
 
           echo "⏳ Bắt đầu theo dõi trạng thái..."
           
-          # Tắt exit on error
+          # Tắt chế độ "hễ lỗi là dừng" để vòng lặp chạy bền bỉ
           set +e 
           status="running"
           
@@ -60,20 +65,13 @@ jobs:
             sleep 60
             
             full_status=$(kaggle kernels status $KERNEL_SLUG)
-            echo "🔍 Raw: $full_status"
+            echo "🔍 Raw output: $full_status"
             
-            # --- LOGIC XỬ LÝ MỚI (ROBUST) ---
-            
-            # 1. Kiểm tra xem có chữ "COMPLETE" hoặc "complete" trong chuỗi không
-            # (Cách này an toàn hơn dùng regex trích xuất)
+            # LOGIC XỬ LÝ TRẠNG THÁI THÔNG MINH
             if [[ "$full_status" == *"COMPLETE"* ]] || [[ "$full_status" == *"complete"* ]]; then
               status="complete"
-            
-            # 2. Kiểm tra lỗi
             elif [[ "$full_status" == *"ERROR"* ]] || [[ "$full_status" == *"error"* ]]; then
               status="error"
-              
-            # 3. Nếu không phải 2 cái trên thì coi như đang running
             else
               status="running"
             fi
@@ -81,15 +79,14 @@ jobs:
             echo "Current Status Parsed: $status"
           done
 
-          # 4. BẬT LẠI CHẾ ĐỘ BẮT LỖI
+          # Bật lại chế độ bắt lỗi
           set -e
 
           if [[ "$status" == "error" ]]; then
-            echo "❌ Training bị lỗi!"
+            echo "❌ Training bị lỗi! Đang tải log về..."
             kaggle kernels output $KERNEL_SLUG -p ./logs
             cat ./logs/*.log
             exit 1
           else
             echo "✅ Training hoàn tất!"
           fi
-        
