@@ -10,10 +10,6 @@ DAGSHUB_TOKEN = "DAGSHUB_TOKEN_PLACEHOLDER"
 
 # Kiểm tra an toàn: Nếu vẫn là placeholder (tức là chạy local hoặc quên replace)
 # thì fallback về biến môi trường để debug
-if DAGSHUB_TOKEN == "DAGSHUB_TOKEN_PLACEHOLDER":
-    print("⚠️ Đang chạy Local hoặc chưa Inject Token. Thử lấy từ Env...")
-    DAGSHUB_TOKEN = "DAGSHUB_TOKEN_PLACEHOLDER"
-
 if not DAGSHUB_TOKEN:
     print("❌ Lỗi: Không tìm thấy DAGSHUB_TOKEN!")
     sys.exit(1)
