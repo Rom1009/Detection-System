@@ -39,8 +39,21 @@ jobs:
           echo "⏳ Đang đợi Kaggle training..."
           
           # 1. TẮT CHẾ ĐỘ "HỄ LỖI LÀ CHẾT" (QUAN TRỌNG NHẤT)
-          set +e 
+          echo "🚀 Đẩy code lên Kaggle..."
+          kaggle kernels push -p .
+
+          # --- FIX QUAN TRỌNG Ở ĐÂY ---
+          echo "💤 Ngủ 60s để Kaggle kịp reset trạng thái..."
+          sleep 60 
+          # ----------------------------
+
+          # Revert lại file code (dọn dẹp)
+          git checkout kaggle_runner.py 
+
+          echo "⏳ Bắt đầu theo dõi trạng thái..."
           
+          # Tắt exit on error
+          set +e 
           status="running"
           
           while [[ "$status" != "complete" && "$status" != "error" ]]; do
