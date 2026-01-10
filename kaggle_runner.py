@@ -52,7 +52,7 @@ try:
     os.environ["MLFLOW_TRACKING_USERNAME"] = "japanesegirl2002"
     os.environ["MLFLOW_TRACKING_PASSWORD"] = DAGSHUB_TOKEN
     
-    run("dvc repro -f")
+    run("dvc repro")
     
     print("✅ SUCCESS")
     sys.exit(0)
