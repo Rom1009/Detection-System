@@ -29,64 +29,64 @@ jobs:
           chmod 600 ~/.kaggle/kaggle.json
 
       # 2. PUSH CODE VÀ TỰ QUẢN LÝ VIỆC CHỜ ĐỢI (POLLING)
-      - name: Push Kernel and Poll for Status
-        id: kaggle_process
-        env:
-          KERNEL_SLUG: ${{ secrets.KAGGLE_USERNAME }}/detection-system-training
-          # Đặt tên biến môi trường khớp với lệnh sed bên dưới
-          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }} 
-        run: |
-          echo "💉 Đang tiêm Token vào code (Bước này đang thiếu nè)..."
-          # 1. TIÊM TOKEN (QUAN TRỌNG NHẤT - KHÔNG ĐƯỢC BỎ QUA)
-          # Tìm chữ PLACEHOLDER thay bằng Token thật
-          sed -i "s|DAGSHUB_TOKEN_PLACEHOLDER|${DAGSHUB_TOKEN}|g" kaggle_runner.py
+      # - name: Push Kernel and Poll for Status
+      #   id: kaggle_process
+      #   env:
+      #     KERNEL_SLUG: ${{ secrets.KAGGLE_USERNAME }}/detection-system-training
+      #     # Đặt tên biến môi trường khớp với lệnh sed bên dưới
+      #     DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }} 
+      #   run: |
+      #     echo "💉 Đang tiêm Token vào code (Bước này đang thiếu nè)..."
+      #     # 1. TIÊM TOKEN (QUAN TRỌNG NHẤT - KHÔNG ĐƯỢC BỎ QUA)
+      #     # Tìm chữ PLACEHOLDER thay bằng Token thật
+      #     sed -i "s|DAGSHUB_TOKEN_PLACEHOLDER|${DAGSHUB_TOKEN}|g" kaggle_runner.py
 
-          # Kiểm tra nhẹ xem file đã đổi chưa (che bớt token để bảo mật log)
-          echo "Kiểm tra file sau khi inject (chỉ in 5 dòng đầu):"
-          head -n 5 kaggle_runner.py
+      #     # Kiểm tra nhẹ xem file đã đổi chưa (che bớt token để bảo mật log)
+      #     echo "Kiểm tra file sau khi inject (chỉ in 5 dòng đầu):"
+      #     head -n 5 kaggle_runner.py
 
-          echo "🚀 Đẩy code lên Kaggle..."
-          kaggle kernels push -p .
+      #     echo "🚀 Đẩy code lên Kaggle..."
+      #     kaggle kernels push -p .
 
-          # 2. NGỦ ĐỂ TRÁNH LỖI NHẬN DIỆN SAI TRẠNG THÁI
-          echo "💤 Ngủ 60s để Kaggle kịp reset trạng thái..."
-          sleep 60 
+      #     # 2. NGỦ ĐỂ TRÁNH LỖI NHẬN DIỆN SAI TRẠNG THÁI
+      #     echo "💤 Ngủ 60s để Kaggle kịp reset trạng thái..."
+      #     sleep 60 
 
-          # 3. DỌN DẸP FILE (Hoàn tác việc sửa token để git sạch sẽ)
-          git checkout kaggle_runner.py 
+      #     # 3. DỌN DẸP FILE (Hoàn tác việc sửa token để git sạch sẽ)
+      #     git checkout kaggle_runner.py 
 
-          echo "⏳ Bắt đầu theo dõi trạng thái..."
+      #     echo "⏳ Bắt đầu theo dõi trạng thái..."
           
-          # Tắt chế độ "hễ lỗi là dừng" để vòng lặp chạy bền bỉ
-          set +e 
-          status="running"
+      #     # Tắt chế độ "hễ lỗi là dừng" để vòng lặp chạy bền bỉ
+      #     set +e 
+      #     status="running"
           
-          while [[ "$status" != "complete" && "$status" != "error" ]]; do
-            sleep 60
+      #     while [[ "$status" != "complete" && "$status" != "error" ]]; do
+      #       sleep 60
             
-            full_status=$(kaggle kernels status $KERNEL_SLUG)
-            echo "🔍 Raw output: $full_status"
+      #       full_status=$(kaggle kernels status $KERNEL_SLUG)
+      #       echo "🔍 Raw output: $full_status"
             
-            # LOGIC XỬ LÝ TRẠNG THÁI THÔNG MINH
-            if [[ "$full_status" == *"COMPLETE"* ]] || [[ "$full_status" == *"complete"* ]]; then
-              status="complete"
-            elif [[ "$full_status" == *"ERROR"* ]] || [[ "$full_status" == *"error"* ]]; then
-              status="error"
-            else
-              status="running"
-            fi
+      #       # LOGIC XỬ LÝ TRẠNG THÁI THÔNG MINH
+      #       if [[ "$full_status" == *"COMPLETE"* ]] || [[ "$full_status" == *"complete"* ]]; then
+      #         status="complete"
+      #       elif [[ "$full_status" == *"ERROR"* ]] || [[ "$full_status" == *"error"* ]]; then
+      #         status="error"
+      #       else
+      #         status="running"
+      #       fi
             
-            echo "Current Status Parsed: $status"
-          done
+      #       echo "Current Status Parsed: $status"
+      #     done
 
-          # Bật lại chế độ bắt lỗi
-          set -e
+      #     # Bật lại chế độ bắt lỗi
+      #     set -e
 
-          if [[ "$status" == "error" ]]; then
-            echo "❌ Training bị lỗi! Đang tải log về..."
-            kaggle kernels output $KERNEL_SLUG -p ./logs
-            cat ./logs/*.log
-            exit 1
-          else
-            echo "✅ Training hoàn tất!"
-          fi
+      #     if [[ "$status" == "error" ]]; then
+      #       echo "❌ Training bị lỗi! Đang tải log về..."
+      #       kaggle kernels output $KERNEL_SLUG -p ./logs
+      #       cat ./logs/*.log
+      #       exit 1
+      #     else
+      #       echo "✅ Training hoàn tất!"
+      #     fi

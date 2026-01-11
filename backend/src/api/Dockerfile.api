@@ -1,0 +1,18 @@
+FROM python:3.12-slim-bookworm
+
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev
+
+WORKDIR /app/api
+
+COPY api_requirements.txt .
+
+RUN pip install -r api_requirements.txt
+
+COPY src/api src/api
+
+CMD ["python", "src/api/main.py"]

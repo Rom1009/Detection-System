@@ -20,15 +20,21 @@ load_dotenv()
 
 class PredictService(IPredictService):
     
-    def __init__(self):
-        super().__init__()
-        self.model = None
+    _isinstance = None
+
+    def __new__(cls):
+        if cls._isinstance is None:
+            print("Init AI Engine")
+            cls._isinstance = super(PredictService, cls).__new__(cls)
+            cls._isinstance.load_model_direct()
+        return cls._isinstance
+        
+        
+    def load_model_direct(self):
         self.model_version = "unknown"
         self.model_name = "DeepLabV3_Model_Registry"
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.load_model_direct()
         
-    def load_model_direct(self):
         print(f"🔄 Đang kết nối MLflow để load model: {self.model_name}")
         
         # 1. Cấu hình URI
@@ -48,7 +54,7 @@ class PredictService(IPredictService):
             self.model_version = latest_version.version
             print(f"🎯 Tìm thấy phiên bản: {self.model_version} (Stage: {latest_version.current_stage})")
 
-            model_uri = f"models:/{self.model_name}/{self.model_version}"
+            model_uri = f"models:/{self.model_name}/2"
             
             print(f"🚀 Đang load model từ URI: {model_uri}")
             
