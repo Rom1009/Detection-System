@@ -15,6 +15,9 @@ import base64
 import cv2
 from .interface import IPredictService
 from .model import PredictionResponse
+from database.db import PredictionLog
+from sqlmodel import Session
+from database.file_storage import save_image_to_disk, save_mask_to_disk
 
 load_dotenv()
 
@@ -98,7 +101,7 @@ class PredictService(IPredictService):
         _, buffer = cv2.imencode('.png', mask * 50) 
         return base64.b64encode(buffer).decode('utf-8')
 
-    async def predict(self, file: UploadFile) -> PredictionResponse:
+    async def predict(self, file: UploadFile, session: Session) -> PredictionResponse:
         label_map = { 0: "scratch", 1: "stain", 2: "oil" }
         
         if self.model is None:
@@ -120,6 +123,21 @@ class PredictService(IPredictService):
         if len(unique_obj) > 0:
             class_id = int(unique_obj[np.argmax(counts_obj)])
             label_name = label_map.get(class_id - 1, "unknown") 
+            
+        image_path = save_image_to_disk(image)
+        mask_path = save_mask_to_disk(predicted_mask)
+        
+        log_entry = PredictionLog(
+            input_image_path=image_path,
+            output_mask_path=mask_path,
+            model_version=self.model_version,
+            detected_label=label_name,
+            confidence_score=float(np.mean(confidence_map)),
+        )
+        
+        session.add(log_entry)
+        session.commit()
+        session.refresh(log_entry)
         
         return {
             "id": str(uuid.uuid4()),

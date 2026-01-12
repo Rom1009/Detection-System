@@ -3,11 +3,13 @@ import logging
 import uvicorn
 from api import register_modules
 from logger import config_logging, LogLevels
+from database.db import create_db_and_tables
 
 
 config_logging(LogLevels.INFO)
 
 
+create_db_and_tables()
 
 def create_app():
     app = FastAPI(
