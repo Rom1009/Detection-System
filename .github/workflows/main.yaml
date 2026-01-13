@@ -14,7 +14,7 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -98,7 +98,6 @@ jobs:
   # ==================================================
   # JOB 2: CD - DEPLOY LÊN AZURE SERVER (Mới thêm)
   # ==================================================
-
   deploy-to-azure:
     needs: run-training
     runs-on: ubuntu-latest
@@ -132,18 +131,18 @@ jobs:
           port: 22
           script: |
             echo "📥 Đang kéo image mới nhất về..."
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/api_flow:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/api_flow:latest
             
             echo "🛑 Đang tắt container cũ..."
-            sudo docker stop ai_server || true
-            sudo docker rm ai_server || true
+            docker stop ai_server || true
+            docker rm ai_server || true
             
             echo "🧹 Dọn dẹp rác (Image cũ)..."
-            sudo docker image prune -f
+            docker image prune -f
 
             echo "🚀 Khởi động server mới..."
             # Lưu ý: File .env phải có sẵn trên server rồi nhé
-            sudo docker run -d \
+            docker run -d \
               --name ai_server \
               --restart always \
               --env-file .env \
