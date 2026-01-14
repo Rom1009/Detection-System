@@ -132,6 +132,8 @@ jobs:
       #     script: |
       #       echo "📥 Đang kéo image mới nhất về..."
       #       docker pull ${{ secrets.DOCKER_USERNAME }}/api_flow:latest
+      #       docker pull ${{ secrets.DOCKER_USERNAME }}/fe_server:latest
+
             
       #       echo "🛑 Đang tắt container cũ..."
       #       docker stop ai_server || true
@@ -148,3 +150,21 @@ jobs:
       #         --env-file .env \
       #         -p 5000:5000 \
       #         ${{ secrets.DOCKER_USERNAME }}/api_flow:latest
+
+      #       echo "🛑 Đang tắt container cũ..."
+      #       docker stop fe_server || true
+      #       docker rm fe_server || true
+            
+      #       echo "🧹 Dọn dẹp rác (Image cũ)..."
+      #       docker image prune -f
+
+      #       echo "🚀 Khởi động server mới..."
+      #       # Lưu ý: File .env phải có sẵn trên server rồi nhé
+      #       docker run -d -p 8501:8501 --name ai_frontend \
+      #         --restart unless-stopped \
+      #         --env-file .env \
+      #         ${{ secrets.DOCKER_USERNAME }}/ai_frontend:latest
+
+      #       # --- 4. DỌN DẸP CUỐI CÙNG ---
+      #       echo "🧹 Cleaning up..."
+      #       docker image prune -f
