@@ -4,8 +4,8 @@ from PIL import Image
 from datetime import datetime
 
 # Folder lưu trữ (Map với Volume Docker)
-UPLOAD_DIR = "/src/api/data/images"
-MASK_DIR = "/src/api/data/masks"
+UPLOAD_DIR = "src/api/data/images"
+MASK_DIR = "src/api/data/masks"
 
 # Tạo folder nếu chưa có
 os.makedirs(UPLOAD_DIR, exist_ok=True)

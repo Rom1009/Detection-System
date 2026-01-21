@@ -1,6 +1,9 @@
 from sqlmodel import SQLModel, create_engine, Session
 import os
 from entities.entities import PredictionLog, UserFeedback # Import để SQLModel biết có bảng này
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Lấy URL từ biến môi trường (trong file .env hoặc Docker)
 DATABASE_URL = os.getenv("DATABASE_URL")

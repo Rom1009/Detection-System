@@ -7,6 +7,7 @@ class PredictModule(BaseModule):
     
     prefix = "/predict" 
     tags = ["predict"]
+    task_module = "predict.tasks"
 
     def __init__(self):
         super().__init__()
