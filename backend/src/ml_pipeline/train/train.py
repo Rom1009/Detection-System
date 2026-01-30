@@ -5,10 +5,7 @@ import mlflow.pytorch
 import torch.nn.functional as F
 from backend.src.ml_pipeline.evaluation.evaluation import calculate_metrics_multiclass
 from mlflow.models.signature import infer_signature
-<<<<<<< HEAD
-=======
 import os
->>>>>>> dev
 
 # ... (Hàm train và validate giữ nguyên) ...
 
@@ -74,13 +71,9 @@ def validate(valid_data_loader, model, criterion, device, num_classes):
 def run(train_data_loader, valid_data_loader, model, criterion, optimizer,
         lr_scheduler, device, num_epochs, num_classes, hparams): # ⭐ 1. Thêm lr_scheduler vào tham số
     
-<<<<<<< HEAD
-    REGISTRY_MODEL_NAME = "My_Defect_Detector"
-=======
     REGISTRY_MODEL_NAME = "DeepLabV3_Model_Registry"
     
     mlflow.set_experiment("DeepLabV3_Experiment")
->>>>>>> dev
     
     with mlflow.start_run(run_name=hparams.get("run_name", "default_run")):
         
