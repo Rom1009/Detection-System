@@ -9,7 +9,6 @@ from prometheus_fastapi_instrumentator import Instrumentator
 
 load_dotenv()
 
-
 config_logging(LogLevels.INFO)
 
 
@@ -18,6 +17,7 @@ create_db_and_tables()
 def create_app():
     app = FastAPI(
         title="Universal Modular FastAPI")
+
     register_modules(app)
     logging.info("This is info")
     return app
@@ -39,3 +39,4 @@ Instrumentator().instrument(app).expose(app)
 
 if __name__ == "__main__":
     uvicorn.run("src.api.main:app", host="0.0.0.0", port=5000,reload=True)
+

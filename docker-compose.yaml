@@ -120,3 +120,4 @@ services:
 networks:
   ai_network:
     driver: bridge
+
