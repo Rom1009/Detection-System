@@ -1,7 +1,7 @@
 # worker.py
-from core.celery_app import celery # Lấy cái neo ra
-from auth.module import AuthModule
-from predict.module import PredictModule
+from src.api.core.celery_app import celery # Lấy cái neo ra
+from src.api.auth.module import AuthModule
+from src.api.predict.module import PredictModule
 
 # 1. Khai báo Modules
 modules = [

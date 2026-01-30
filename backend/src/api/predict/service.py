@@ -1,4 +1,4 @@
-from fastapi import UploadFile
+from fastapi import UploadFile, BackgroundTasks
 import torch
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
@@ -13,13 +13,26 @@ from dotenv import load_dotenv
 from mlflow.tracking import MlflowClient
 import base64
 import cv2
+
+from src.api.monitor.service import MonitorService
 from .interface import IPredictService
 from .model import PredictionResponse
-from database.db import PredictionLog
+from src.api.database.db import PredictionLog
 from sqlmodel import Session
-from database.file_storage import save_image_to_disk, save_mask_to_disk
+from src.api.database.file_storage import save_image_to_disk, save_mask_to_disk
 
 load_dotenv()
+
+monitor_service = MonitorService()
+
+
+def run_background_monitoring(image_numpy, mask_numpy):
+    try:
+        # Tính toán drift và đẩy lên Prometheus
+        monitor_service.calculate_drift(image_numpy, mask_numpy)
+        print("✅ Background Task: Đã update metrics lên Prometheus!")
+    except Exception as e:
+        print(f"❌ Lỗi monitoring ngầm: {e}")
 
 class PredictService(IPredictService):
     
@@ -101,7 +114,7 @@ class PredictService(IPredictService):
         _, buffer = cv2.imencode('.png', mask * 50) 
         return base64.b64encode(buffer).decode('utf-8')
 
-    async def predict(self, file: UploadFile, session: Session) -> PredictionResponse:
+    async def predict(self, file: UploadFile, session: Session, background_tasks: BackgroundTasks = BackgroundTasks()) -> PredictionResponse:
         label_map = { 0: "scratch", 1: "stain", 2: "oil" }
         
         if self.model is None:
@@ -112,7 +125,8 @@ class PredictService(IPredictService):
         image_np = np.array(image)
         
         _, predicted_mask, confidence_map = self.inference(image_np, self.device)
-        
+
+        background_tasks.add_task(run_background_monitoring, image_np, predicted_mask)
         # Logic tính toán label (Giữ nguyên logic của bạn)
         unique, counts = np.unique(predicted_mask, return_counts=True)
         mask_bg = unique != 0
@@ -141,6 +155,7 @@ class PredictService(IPredictService):
         
         return {
             "id": str(uuid.uuid4()),
+            "image": self.mask_to_base64(image_np),
             "label": label_name,
             # QUAN TRỌNG: Đổi tolist() thành base64 để không sập server
             "mask": self.mask_to_base64(predicted_mask), 

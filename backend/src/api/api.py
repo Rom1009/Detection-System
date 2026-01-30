@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter
-from auth.module import AuthModule
-from predict.module import PredictModule
+from src.api.auth.module import AuthModule
+from src.api.predict.module import PredictModule
 
 def register_modules(app: FastAPI):
     

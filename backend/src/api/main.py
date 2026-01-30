@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 import logging
 import uvicorn
-from api import register_modules
-from logger import config_logging, LogLevels
-from database.db import create_db_and_tables
+from src.api.api import register_modules
+from src.api.logger import config_logging, LogLevels
+from src.api.database.db import create_db_and_tables
 from dotenv import load_dotenv
+from prometheus_fastapi_instrumentator import Instrumentator
 
 load_dotenv()
 
@@ -31,7 +32,10 @@ def create_app():
 #     return celery
 
 app = create_app()
+
+Instrumentator().instrument(app).expose(app)
+
 # celery = create_celery()
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=5000,reload=True)
+    uvicorn.run("src.api.main:app", host="0.0.0.0", port=5000,reload=True)

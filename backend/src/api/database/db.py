@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, create_engine, Session
 import os
-from entities.entities import PredictionLog, UserFeedback # Import để SQLModel biết có bảng này
+from src.api.entities.entities import PredictionLog, UserFeedback # Import để SQLModel biết có bảng này
 from dotenv import load_dotenv
 
 load_dotenv()

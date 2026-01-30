@@ -1,4 +1,4 @@
-from core.base_module import BaseModule
+from src.api.core.base_module import BaseModule
 from .controller import register, login, login_get
 from fastapi import APIRouter
 

@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libxrender-dev
 
-WORKDIR /app/api
+WORKDIR /app
 
 COPY api_requirements.txt .
 
