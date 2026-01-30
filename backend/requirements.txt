@@ -11,4 +11,12 @@ albumentations==2.0.8
 scikit-image==0.25.2
 mlflow==3.5.0
 dvc-gdrive==3.0.1
+<<<<<<< HEAD
 dvc==3.63.0
+=======
+<<<<<<< HEAD
+dvc==3.63.0
+=======
+dvc==3.63.0
+>>>>>>> dev
+>>>>>>> main

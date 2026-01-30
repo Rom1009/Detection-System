@@ -1,4 +1,8 @@
 [core]
     remote = origin
 [remote "origin"]
+<<<<<<< HEAD
     url = "https://dagshub.com/japanesegirl2002/Detection-System.dvc"
+=======
+    url = "https://dagshub.com/japanesegirl2002/Detection-System.dvc"
+>>>>>>> main
