@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 x-airflow-common: &AIRFLOW_COMMON_CONFIG
   image: apache/airflow:latest-python3.11
   environment: &AIRFLOW_COMMON_ENV
@@ -209,3 +210,127 @@ services:
 
 volumes:
   airflow_data:
+=======
+version: '3.8'
+
+services:
+  # ----------------------------------------
+  # 1. REDIS (Bộ nhớ đệm & Hàng đợi)
+  # ----------------------------------------
+  redis_broker:
+    image: redis:alpine
+    container_name: ai_redis
+    ports:
+      - "6379:6379" # Mở port để bạn có thể debug từ máy ngoài (Optional)
+    networks:
+      - ai_network
+    healthcheck: # Kiểm tra xem Redis sống chưa
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ----------------------------------------
+  # 2. BACKEND API (FastAPI)
+  # ----------------------------------------
+  backend_api:
+    build: 
+      context: ./backend
+      dockerfile: src/api/Dockerfile.api
+    container_name: api_flow
+    restart: always
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 5000 --reload
+    volumes:
+      - ./backend:/app # <--- QUAN TRỌNG: Map code để sửa là cập nhật ngay
+    ports:
+      - "5000:5000"
+    environment:
+      - REDIS_URL=redis://redis_broker:6379/0 # Trỏ vào tên service redis ở trên
+      - DATABASE_URL=postgresql://admin123:quyromnguyen%40123@quy-db-server.postgres.database.azure.com:5432/postgres?sslmode=require
+      - MLFLOW_TRACKING_URI=https://dagshub.com/japanesegirl2002/Detection-System.mlflow
+    depends_on:
+      redis_broker:
+        condition: service_healthy
+    networks:
+      - ai_network
+
+  # ----------------------------------------
+  # 3. WORKER (Celery - Chạy Model AI)
+  # ----------------------------------------
+  # Lưu ý: Worker dùng chung Image với Backend, chỉ khác lệnh chạy
+  celery_worker:
+    build: 
+      context: ./backend
+      dockerfile: src/api/Dockerfile.api
+    container_name: api_flow_worker
+    restart: always
+    # Lệnh chạy Worker (như tui đã hướng dẫn bài trước)
+    command: celery -A src.api.worker.celery_app worker --loglevel=info
+    volumes:
+      - ./backend:/app # Map code để sửa logic AI là worker cập nhật theo
+      # Nếu bạn dùng Model Kaggle download về, nhớ map folder chứa model
+      # - ./backend/models:/app/models 
+    environment:
+      - REDIS_URL=redis://redis_broker:6379/0
+      # Worker cần biến môi trường để load model, connect DB
+      - MLFLOW_TRACKING_URI=https://dagshub.com/japanesegirl2002/Detection-System.mlflow
+    depends_on:
+      redis_broker:
+        condition: service_healthy
+      backend_api: # Đợi API chạy xong mới chạy Worker (đỡ lỗi file)
+        condition: service_started
+    networks:
+      - ai_network
+
+  # ----------------------------------------
+  # 4. FRONTEND (Streamlit)
+  # ----------------------------------------
+  frontend_ui:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.fe
+    container_name: fe_server
+    restart: always
+    command: streamlit run fe_app.py --server.port 8501 --server.address 0.0.0.0
+    volumes:
+      - ./frontend:/app # Hot-reload cho UI
+    ports:
+      - "8501:8501"
+    environment:
+      # Khi chạy trong Docker Network, Frontend gọi Backend qua tên service
+      # Tuy nhiên, Streamlit chạy trên trình duyệt user, nên cần trỏ về Localhost hoặc IP Public
+      # Local chạy dòng này:
+      - BACKEND_URL=http://localhost:5000 
+    networks:
+      - ai_network
+
+  # ----------------------------------------
+  # 5. MONITORING (Optional - Uncomment khi cần)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: monitor_prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    networks:
+      - ai_network
+  # --- Grafana (Vẽ biểu đồ) ---
+  grafana:
+    image: grafana/grafana:latest
+    container_name: monitor_grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin # Pass đăng nhập: admin / admin
+    depends_on:
+      - prometheus
+    networks:
+      - ai_network
+
+networks:
+  ai_network:
+    driver: bridge
+>>>>>>> dev
