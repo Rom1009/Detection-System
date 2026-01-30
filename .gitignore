@@ -17,4 +17,10 @@ mlruns/
 
 backend/airflow/logs
 backend/airflow
+<<<<<<< HEAD
 gdrive_sa.json
+=======
+gdrive_sa.json
+
+kaggle.json
+>>>>>>> dev

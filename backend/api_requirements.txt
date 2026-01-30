@@ -1,1 +1,17 @@
 fastapi==0.118.3
+<<<<<<< HEAD
+=======
+mlflow==3.5.0
+torch==2.8.0
+torchvision==0.23.0
+opencv-python==4.12.0.88
+albumentations==2.0.8
+sqlmodel==0.0.31
+psycopg2-binary==2.9.11
+celery==5.5.3
+flower==2.0.1
+redis==7.1.0
+evidently==0.7.20
+prometheus_client==0.24.1
+prometheus-fastapi-instrumentator==7.1.0
+>>>>>>> dev

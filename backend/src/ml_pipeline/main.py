@@ -12,7 +12,11 @@ from backend.src.ml_pipeline.dataset import Img_Segmentation_Dataset, train_tran
 # ===================================================================
 # CẤU HÌNH
 # ===================================================================
+<<<<<<< HEAD
 NUM_EPOCHS = 20
+=======
+NUM_EPOCHS = 5
+>>>>>>> dev
 NUM_CLASSES = 4
 BATCH_SIZE = 4 # ⭐ 3. Định nghĩa BATCH_SIZE ở một nơi
 
